@@ -10,14 +10,14 @@ function AboutPage() {
       <div className='about-c'>
         <div className="about-box">
           <div className="about-image">
-            <img src="Park_Cloud/about.png" alt=""/>
+           {/* <img src="Park_Cloud/about.png" alt=""/>*/ }
          
           </div>
           {/* <h3>Service 4</h3>
               <p>Description of Service 4 goes here.</p> */}
         </div>
         <div className="about-txt">
-          <p>Some text about who we are and what we do.</p>
+          <h2>Some text about who we are and what we do.</h2>
 
           <p>"Welcome to Park Cloud Car Park, your trusted destination for hassle-free parking solutions.
             Our mission is to make parking effortless and stress-free for you. With a wide network of 
@@ -28,10 +28,13 @@ function AboutPage() {
         </div>
       </div>
 
-      <div className="About-row">
-        <center>
+
+      <div  class="team-member">
       <h2 className="team-heading">Our Team</h2>
-      </center>
+      </div>
+
+      <div className="About-row">
+       
       <div className="info-card">
               <h3 className="info-card__title">
                 Convenience and Accessibility

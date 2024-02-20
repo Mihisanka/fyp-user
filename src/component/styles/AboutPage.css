@@ -2,7 +2,7 @@
   padding: 20px;
   text-align: center;
   background-color:rgba(11,12,40,255);
-  color: rgb(4, 214, 175);
+  color: rgb(255, 255, 255);
   height: auto;
   align-items: center;
 }
@@ -13,7 +13,9 @@
     margin-bottom: 20px;
     align-items: center;
 }
-
+.about-heading{
+  padding-bottom: 10px;
+}
 body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 20;
@@ -45,7 +47,7 @@ html {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   margin: 8px;
 }
-
+/******************************* About Me Card ******************************
 .about-box {
   flex-basis: calc(50% - 20px);
   padding: 20px;
@@ -57,14 +59,28 @@ html {
   width: 600px;
   height: 400px;
   
-}
+}*/
 
 .about-txt{
+  text-align: center; /* Center-align the text */
   font-size: medium;
-  text-align: left;
-  width: 600px;
-  height: 400px;
+  width: auto;
+  height: auto;
+  padding-top: 90px;
+  
 
+  h2{
+    padding-bottom: 20px;
+  }
+
+}
+
+.team-member{
+  align-items: center;
+  padding-right: 50px;
+  padding-bottom: 20px;
+  padding-top: 20px;
+ 
 }
 
 .member-box {
@@ -141,6 +157,7 @@ html {
   padding:30px 0 15px;
   margin-bottom:50px;
   margin-top:30px;
+  margin-left: 30px;
   border-radius:20px;
   box-shadow:0px 5px 5px rgba(0,0,0,.3),1px -1px 2px rgba(0,0,0,.4);
   cursor:pointer;
@@ -148,7 +165,7 @@ html {
 }
 
 .info-card:hover{
-  background-color:#35068c;
+  background:linear-gradient(45deg,  #085fbd 0%, rgba(3, 20, 151, 0.944));
   color:#fff;
   transform:scale(1.05)
 }
@@ -158,7 +175,7 @@ html {
 }
 .info-card:active{
   transform:scale(0.95);
-  background-color:#4808bd
+  background-color:#085fbd
 }
 
 .info-card .fab{
