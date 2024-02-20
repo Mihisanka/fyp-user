@@ -1,0 +1,116 @@
+ /* NavBar.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color:#181b3a;
+  padding: 10px 20px;
+  color: rgba(4, 214, 175 ) ;
+
+}
+
+.navbar-logo a {
+  text-decoration: none;
+  font-size: 24px;
+  color:rgba(4, 214, 175 ) ;
+}
+
+.navbar-menu{
+color:rgba(4, 214, 175 ) ;
+
+}
+
+.navbar-menu ul {
+  list-style: none;
+  display: flex;
+  color:rgba(4, 214, 175 ) ;
+}
+
+.navbar-menu ul li {
+  margin-right: 20px;
+  color:rgb(4, 214, 175 ) ;
+}
+
+.navbar-menu ul li a {
+  text-decoration: none;
+  color: rgb(4, 214, 175 ) ;
+  font-size: 18px;
+}
+
+.navbar-menu ul li a.active-link {
+  font-weight: bold;
+}
+
+.menu-icon {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.bar {
+  background-color: white;
+  height: 3px;
+  width: 30px;
+  margin: 4px 0;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.menu-item {
+  cursor: pointer;
+  font-size: 18px;
+  color:rgb(4, 214, 175 );
+}
+
+@media (max-width: 768px) {
+  .menu-icon {
+    display: flex;
+  }
+
+  .navbar-menu {
+    flex-direction: column;
+    position: absolute;
+    background-color:rgb(12, 14, 57);
+    width: 100%;
+    top: 65px;
+    left: 0;
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(-100%);
+    z-index: 1;
+  }
+
+  .navbar-menu.active {
+    transform: translateY(0);
+  }
+
+  .navbar-menu ul {
+    flex-direction: column;
+    align-items: center;
+    /*flex-direction: column;*/
+  }
+
+  .navbar-menu ul li {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .navbar-menu ul li a {
+    font-size: 20px;
+    
+  }
+
+  .navbar {
+    flex-direction: column; /* Stack logo and menu on top of each other */
+    align-items: center; /* Center items in the column */
+  }
+
+  .navbar-logo {
+    margin-bottom: 10px; /* Add space between logo and menu on small screens */
+  }
+}
+
+
