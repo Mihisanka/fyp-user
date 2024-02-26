@@ -1,6 +1,6 @@
 import React from 'react';
 import './styles/Contact.css';
-import bg1 from './Assets/bg1.png' // Import your CSS file
+//import bg1 from './Assets/bg1.png' // Import your CSS file
 
 const ContactForm = () => {
     return (

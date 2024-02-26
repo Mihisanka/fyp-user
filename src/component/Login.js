@@ -2,6 +2,7 @@ import React from 'react';
 import './styles/Login.css'; // Import your CSS file
 
 const LoginForm = () => {
+    
     return (
         <section>
             <div className="form-box">
