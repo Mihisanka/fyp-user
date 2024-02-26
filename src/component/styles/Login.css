@@ -10,9 +10,10 @@ section {
     align-items: center;
     min-height: 100vh;
     width: 100%;
-    background: url("background.jpg") no-repeat;
+    /* background: url("background.jpg") no-repeat; */
     background-position: center;
     background-size: cover;
+    background: #01012b;
 }
 
 .form-box {
@@ -26,6 +27,7 @@ section {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: rgb(101, 101, 101);
 }
 
 h2 {
@@ -134,3 +136,4 @@ button {
         border-radius: 0px;
     }
 }
+

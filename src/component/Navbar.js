@@ -1,4 +1,3 @@
-// NavBar.js
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import "./styles/Navbar.css";
@@ -19,17 +18,17 @@ const Navbar = () => {
       <div className={`navbar-menu ${menuOpen ? "active" : ""}`}>
         <ul>
           <li>
-            <NavLink to="/" activeClassName="active-link">
+            <NavLink exact to="/" activeClassName="active-link">
               Home
             </NavLink>
           </li>
           <li>
-            <NavLink to="/booking" activeClassName="active-link">
-              Booking Us{" "}
+            <NavLink to="/login" activeClassName="active-link">
+              Booking
             </NavLink>
           </li>
           <li>
-            <NavLink to="/location-search" activeClassName="active-link">
+          <NavLink to="/service" activeClassName="active-link">
               Services
             </NavLink>
           </li>
@@ -45,13 +44,6 @@ const Navbar = () => {
           <div className="bar"></div>
         </div>
       </div>
-
-      {/* <div className="user-menu">
-        <div className="menu-item">Profile</div>
-        <div className="menu-item">Account</div>
-        <div className="menu-item">Dashboard</div>
-        <div className="menu-item">Logout</div>
-      </div> */}
     </nav>
   );
 };

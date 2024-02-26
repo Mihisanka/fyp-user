@@ -36,9 +36,9 @@ function AboutPage() {
       <div className="About-row">
        
       <div className="info-card">
-              <h3 className="info-card__title">
+              <h4 className="info-card__title">
                 Convenience and Accessibility
-              </h3>
+              </h4>
               <img
                 src="../assets/traverse-assets/benefits1.svg"
                 alt=""
@@ -53,9 +53,9 @@ function AboutPage() {
 
 
             <div className="info-card">
-              <h3 className="info-card__title">
+              <h4 className="info-card__title">
                 Convenience and Accessibility
-              </h3>
+              </h4>
               <img
                 src="../assets/traverse-assets/benefits1.svg"
                 alt=""

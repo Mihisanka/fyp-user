@@ -5,6 +5,9 @@ import HomePage from '../HomePage';
 import AboutPage from '../AboutPage';
 import BookingPage from '../BookingPage';
 import LocationSearchPage from '../LocationSearchPage';
+import Login from '../Login';
+import Services from '../Service';
+import Registration from '../Registration';
 
 function Layout() {
   return (
@@ -16,6 +19,10 @@ function Layout() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/location-search" element={<LocationSearchPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/service" element={<Services />} />
+          <Route path="/registration" element={<Registration/>} />
+
         </Routes>
       </div>
     </Router>

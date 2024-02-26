@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './styles/Home.css'
 import Services from './Service';
 import AboutPage from './AboutPage';
 import Footer from './Footer';
@@ -9,27 +9,32 @@ import ContactForm from './ContactForm';
 function HomePage() {
   return (
     <>
-      <div className='Home-container'>
-        <h1>Home</h1>
-        <p>Welcome to the home page! This is a simple example of a Next.js stateless functional component.</p>
-        <img src="/static/images/nextjs.png" alt="Next.js logo"/>
+      <div className="homepage">
+        <div className="home-heading">
+          <h4>Park Cloud</h4>
+        </div>
+
+        <div className="home-sub-heading">
+          <p style={{ color: "black" }}>
+            <b>Your trusted destination for hassle-free parking solutions.</b>
+          </p>
+        </div>
+      </div>  
+
+          <>
+          <Services/>
+          </>
+          <>
+          <AboutPage/>
+          </>
+          <>
+          <ContactForm/>
+          </>
+
+          <>
+          <Footer/>
+          </>
         
-      </div>
-
-      <>
-      <Services/>
-      </>
-      <>
-      <AboutPage/>
-      </>
-      <>
-      <ContactForm/>
-      </>
-
-      <>
-      <Footer/>
-      </>
-     
     </>
   );
 }

@@ -27,7 +27,7 @@ const LoginForm = () => {
                         </div>
                         <button>Log In</button>
                         <div className="register">
-                            <p>Don't have an account? <a href="#">Sign Up</a></p>
+                            <p>Don't have an account? <a href="registration">Sign Up</a></p>
                         </div>
                     </form>
                 </div>
@@ -35,13 +35,15 @@ const LoginForm = () => {
         </section>
     );
 };
+export default   LoginForm ;
 
-const App = () => {
-    return (
-        <div>
-            <LoginForm />
-        </div>
-    );
-};
+// // const App = () => {
+// //     return (
+// //         <div>
+// //             <LoginForm />
+// //         </div>
+// //     );
+// // };
 
-export default App;
+// // export default App;
+

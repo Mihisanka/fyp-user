@@ -1,8 +1,8 @@
 .about-section {
   padding: 20px;
   text-align: center;
-  background-color:rgba(11,12,40,255);
-  color: rgb(255, 255, 255);
+  background-color:rgb(255, 255, 255);
+  color: rgb(69, 64, 64);
   height: auto;
   align-items: center;
 }
