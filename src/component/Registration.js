@@ -1,98 +1,48 @@
-import React, { useState } from 'react';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
-import './styles/Registration.css';
 
-// Initialize Firebase (replace with your Firebase config)
-const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_AUTH_DOMAIN',
-  projectId: 'YOUR_PROJECT_ID',
-  storageBucket: 'YOUR_STORAGE_BUCKET',
-  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-  appId: 'YOUR_APP_ID',
-};
+import React, { useState } from "react";
+import {db} from '../FirebaseConfig/Firebase';
+import './styles/Login.css';
+import {Link} from 'react-router-dom';
+import {getDocs, addDoc ,collection,where,query} from  'firebase/firestore';
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const  Registration = () => {
 
-const RegistrationForm = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [vehicleNumber, setVehicleNumber] = useState('');
-  const [vehicleType, setVehicleType] = useState('');
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Save registration data to Firebase
-    db.collection('registrations').add({
-      name,
-      email,
-      vehicleNumber,
-      vehicleType,
-    })
-    .then(() => {
-      console.log('Registration successful');
-      // Clear form fields after successful registration
-      setName('');
-      setEmail('');
-      setVehicleNumber('');
-      setVehicleType('');
-    })
-    .catch((error) => {
-      console.error('Error registering:', error);
-    });
-  };
+  const[name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [vehiclenumber, setVehicleNumber] = useState("");
+  const[phoneNumber,setPhoneNumber]=useState('');
+  const dbref =collection(db,"Auth")
+  const registration = async ()=>{
+    await addDoc (dbref,{Name:name,Email:email,Password:password,Vehiclenumber:vehiclenumber,Phonenumber: phoneNumber})
+  }
 
-  return (
-    <div className="registration-container">
-      <form onSubmit={handleSubmit} className="registration-form">
-        <h2>Registration Form</h2>
-        <div className="form-group">
-          <label>Name:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+  return(
+    <div className="container">
+      <div className=" form ">
+        <h2>Registration</h2>
+        <div className="box">
+          <input  type="text" placeholder="Name" onChange={(e) =>setName(e.target.value)}></input>
         </div>
-        <div className="form-group">
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+        <div className="box">
+          <input  type="email" placeholder="Email" onChange={(e) =>setEmail(e.target.value)}></input>
         </div>
-        <div className="form-group">
-          <label>Vehicle Number:</label>
-          <input
-            type="text"
-            value={vehicleNumber}
-            onChange={(e) => setVehicleNumber(e.target.value)}
-            required
-          />
+        <div className="box">
+          <input  type="password" placeholder="password"onChange={(e) =>  setPassword (e.target.value)} ></input>
         </div>
-        <div className="form-group">
-          <label>Vehicle Type:</label>
-          <select
-            value={vehicleType}
-            onChange={(e) => setVehicleType(e.target.value)}
-            required
-          >
-            <option value="">Select Vehicle Type</option>
-            <option value="car">Car</option>
-            <option value="van">Van</option>
-            <option value="bike">Bike</option>
-            <option value="truck">Truck</option>
-          </select>
+        <div className="box">
+          <input  type="number" placeholder="vehicle number" onChange={(e) =>  setVehicleNumber (e.target.value)}></input>
         </div>
-        <button type="submit">Submit</button>
-      </form>
+        <div className="box">
+          <input  type="number" placeholder="Phone Number" onChange={(e) =>setPhoneNumber(e.target.value)}></input>
+        </div>
+        
+        
+        <p>Already Have an account <Link to ='/login'>Sign in </Link> </p>
+        <button onClick={registration}>SignUp</button>
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default RegistrationForm;
+export default Registration;

@@ -1,14 +1,16 @@
 
-.registration-container {
+.container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    width: auto;
+    height: 100px;
     background-color: #01012b;/* Blue background */
+    padding-top: 10px;
  
   }
-  
-  .registration-form {
+ 
+ .container .registration-form {
     background-color: #f2f2f2;
     width: 600px;
     height: 500px; /* Gray form background */
@@ -17,10 +19,20 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     .h2{
         color: #01012b;
-
     }
   }
-  
+
+  .button {
+    padding: 10px 20px;
+    background-color: #4287f5; /* Blue button */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 25px;
+  }
+   /* 
   .form-group {
     margin-bottom: 20px;
   }
@@ -43,7 +55,7 @@
   
   button {
     padding: 10px 20px;
-    background-color: #4287f5; /* Blue button */
+    background-color: #4287f5; /* Blue button /
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -53,8 +65,49 @@
   }
   
   button:hover {
-    background-color: #3366cc; /* Darker blue on hover */
-  }
+    background-color: #3366cc; /* Darker blue on hover /
+  } */
+
+  /* .container{
+    padding: 20px 30px;
+    background: #8e8e8e;
+}
+
+.container .form{
+    padding:40px 30px
+}
+.container .form h2{
+ text-align: center;
+ font-size: 24px;
+ color: black;
+}
+
+.container .form .box{
+    margin-top:15px;
+}
+
+.container .form .box input{
+    border:none;
+    outline:none;
+    border: 1px solid #dadada;
+    padding: 20px 0px;
+}
+
+.container .form .button{
+ 
+padding: 10px 30px;
+width:50%;
+height: 50%;
+color: bisque;
+border: none;
+outline: none;
+background: #8e8e8e;
+margin-top: 15px;
+cursor:pointer;
+} */
+
+
+
   @media(max-width: 600px){
     .container{
         min-width: 280px;

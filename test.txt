@@ -1,0 +1,664 @@
+// import React, { useState } from 'react';
+// import firebase from 'firebase/compat/app';
+// import 'firebase/compat/firestore';
+// import './styles/Registration.css';
+
+// // Initialize Firebase (replace with your Firebase config)
+// const firebaseConfig = {
+//   apiKey: 'YOUR_API_KEY',
+//   authDomain: 'YOUR_AUTH_DOMAIN',
+//   projectId: 'YOUR_PROJECT_ID',
+//   storageBucket: 'YOUR_STORAGE_BUCKET',
+//   messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+//   appId: 'YOUR_APP_ID',
+// };
+
+// firebase.initializeApp(firebaseConfig);
+// const db = firebase.firestore();
+
+// const RegistrationForm = () => {
+//   const [name, setName] = useState('');
+//   const [email, setEmail] = useState('');
+//   const [vehicleNumber, setVehicleNumber] = useState('');
+//   const [vehicleType, setVehicleType] = useState('');
+  
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     // Save registration data to Firebase
+//     db.collection('registrations').add({
+//       name,
+//       email,
+//       vehicleNumber,
+//       vehicleType,
+//     })
+//     .then(() => {
+//       console.log('Registration successful');
+//       // Clear form fields after successful registration
+//       setName('');
+//       setEmail('');
+//       setVehicleNumber('');
+//       setVehicleType('');
+//     })
+//     .catch((error) => {
+//       console.error('Error registering:', error);
+//     });
+//   };
+
+//   return (
+//     <div className="registration-container">
+//       <form onSubmit={handleSubmit} className="registration-form">
+//         <h2>Registration Form</h2>
+//         <div className="form-group">
+//           <label>Name:</label>
+//           <input
+//             type="text"
+//             value={name}
+//             onChange={(e) => setName(e.target.value)}
+//             required
+//           />
+//         </div>
+//         <div className="form-group">
+//           <label>Email:</label>
+//           <input
+//             type="email"
+//             value={email}
+//             onChange={(e) => setEmail(e.target.value)}
+//             required
+//           />
+//         </div>
+//         <div className="form-group">
+//           <label>Vehicle Number:</label>
+//           <input
+//             type="text"
+//             value={vehicleNumber}
+//             onChange={(e) => setVehicleNumber(e.target.value)}
+//             required
+//           />
+//         </div>
+//         <div className="form-group">
+//           <label>Vehicle Type:</label>
+//           <select
+//             value={vehicleType}
+//             onChange={(e) => setVehicleType(e.target.value)}
+//             required
+//           >
+//             <option value="">Select Vehicle Type</option>
+//             <option value="car">Car</option>
+//             <option value="van">Van</option>
+//             <option value="bike">Bike</option>
+//             <option value="truck">Truck</option>
+//           </select>
+//         </div>
+//         <button type="submit">Submit</button>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default RegistrationForm;
+/
+/
+/
+/
+/
+/
+/
+/
+/
+//////////////////////////////////////Login/////////////////////////////////////////////////////
+/
+/
+/
+/
+/
+
+// import React, { useState } from "react";
+// import "./styles/Login.css"; // Import your CSS file
+// import { createUserWithEmailAndPassword } from "firebase/auth";
+// import { auth } from "../FirebaseConfig/Firebase.js";
+
+// const LoginForm = () => {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [isSignUpActive, seIsSignUpActive] = useState(false);
+//   const handleMethodChange = () => {
+//     seIsSignUpActive(!isSignUpActive);
+//   };
+
+//   const handleSignUp = () => {
+//     createUserWithEmailAndPassword(auth, email, password)
+//       .then((userCredential) => {
+//         const user = userCredential.user;
+//         console.log(user);
+//       })
+//       .catch((error) => {
+//         const errorCode = error.code;
+//         const errorMessage = error.message;
+//         console.log(errorCode, errorMessage);
+//       });
+//   };
+
+//   const handleEmailChange = (event) => setEmail(event.target.value);
+//   const handlePasswordChange = (event) => setPassword(event.target.value);
+
+//   return (
+//     <section>
+//       <div className="form-box">
+//         <div className="form-value">
+//           <h2>Login</h2>
+//           <form>
+//             {isSignUpActive && <legend>Sign up</legend>}
+//             {!isSignUpActive && <legend>Sign in</legend>}
+//             <fieldset>
+//               <ul>
+//                 <li>
+//                   <label htmlFor="email">Email</label>
+//                   <input
+//                     type="email"
+//                     id="email"
+//                     onChange={handleEmailChange}
+//                     required
+//                   />
+//                 </li>
+//                 <li>
+//                   <label htmlFor="email">Email</label>
+//                   <input
+//                     type="password"
+//                     id="password"
+//                     onChange={handlePasswordChange}
+//                     required
+//                   />
+//                 </li>
+//               </ul>
+//               {isSignUpActive && (
+//                 <button type="button" onClick={handleSignUp}>
+//                   Sign up
+//                 </button>
+//               )}
+//               {!isSignUpActive && <button type="button">Sign in</button>}
+//             </fieldset>
+//             {isSignUpActive && <a onClick={handleMethodChange}> Signup</a>}
+//             {!isSignUpActive && (
+//               <a onClick={handleMethodChange}> Cleat an account </a>
+//             )}
+//           </form>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+// export default LoginForm;
+
+// // // const App = () => {
+// // //     return (
+// // //         <div>
+// // //             <LoginForm />
+// // //         </div>
+// // //     );
+// // // };
+
+// // // export default App;
+
+// // import React, { useState } from "react";
+// // import firebase from 'firebase/compat/app'; // Import your Firebase configuration
+
+// // const LoginForm = () => {
+// //   const [isSignUpActive, setIsSignUpActive] = useState(false);
+// //   const [formData, setFormData] = useState({
+// //     email: '',
+// //     password: ''
+// //   });
+
+// //   const handleMethodChange = () => {
+// //     setIsSignUpActive(!isSignUpActive);
+// //   };
+
+// //   const handleChange = (e) => {
+// //     setFormData({ ...formData, [e.target.id]: e.target.value });
+// //   };
+
+// //   const handleSubmit = (e) => {
+// //     e.preventDefault();
+// //     if (isSignUpActive) {
+// //       // Sign up user
+// //       firebase.auth().createUserWithEmailAndPassword(formData.email, formData.password)
+// //         .then((userCredential) => {
+// //           // User registered successfully
+// //           var user = userCredential.user;
+// //           console.log("User registered successfully:", user);
+// //           // You can perform further actions here, like updating user profile, sending verification email, etc.
+// //         })
+// //         .catch((error) => {
+// //           var errorCode = error.code;
+// //           var errorMessage = error.message;
+// //           console.error("Registration error:", errorMessage);
+// //         });
+// //     } else {
+// //       // Sign in user
+// //       firebase.auth().signInWithEmailAndPassword(formData.email, formData.password)
+// //         .then((userCredential) => {
+// //           // User signed in successfully
+// //           var user = userCredential.user;
+// //           console.log("User signed in successfully:", user);
+// //           // You can redirect the user or perform further actions here
+// //         })
+// //         .catch((error) => {
+// //           var errorCode = error.code;
+// //           var errorMessage = error.message;
+// //           console.error("Sign-in error:", errorMessage);
+// //         });
+// //     }
+// //   };
+
+// //   return (
+// //     <section>
+// //       <div className="form-box">
+// //         <div className="form-value">
+// //           <h2>{isSignUpActive ? 'Sign Up' : 'Sign In'}</h2>
+// //           <form onSubmit={handleSubmit}>
+// //             <fieldset>
+// //               <ul>
+// //                 <li>
+// //                   <label htmlFor="email">Email</label>
+// //                   <input type="email" id="email" onChange={handleChange} value={formData.email} />
+// //                 </li>
+// //                 <li>
+// //                   <label htmlFor="password">Password</label>
+// //                   <input type="password" id="password" onChange={handleChange} value={formData.password} />
+// //                 </li>
+// //               </ul>
+// //               <button type="submit">{isSignUpActive ? 'Sign Up' : 'Sign In'}</button>
+// //             </fieldset>
+// //           </form>
+// //           <p>
+// //             {isSignUpActive ? 'Already have an account?' : 'Don\'t have an account?'}
+// //             <a onClick={handleMethodChange}>{isSignUpActive ? ' Sign in' : ' Sign up'}</a>
+// //           </p>
+// //         </div>
+// //       </div>
+// //     </section>
+// //   );
+// // };
+
+// // export default LoginForm;
+
+/
+/
+/
+/
+/
+/
+/
+/
+//////////////////////////////////////Login/////////////////////////////////////////////////////
+/
+/// import React, { useState } from "react";
+// import "./styles/Login.css"; // Import your CSS file
+// import { createUserWithEmailAndPassword } from "firebase/auth";
+// // import { auth } from "../FirebaseConfig/Firebase.js";
+// import { getAuth } from "firebase/auth";
+
+// // const LoginForm = () => {
+// //   const [email, setEmail] = useState("");
+// //   const [password, setPassword] = useState("");
+// //   const [isSignUpActive, seIsSignUpActive] = useState(false);
+// //   const handleMethodChange = () => {
+// //     seIsSignUpActive(!isSignUpActive);
+// //   };
+
+// //   const handleSignUp = () => {
+// //     createUserWithEmailAndPassword(getAuth,email,password)
+// //     .then ((userCredential) =>{
+// //         const user=userCredential.user;
+// //         console.log(user);
+// //     })
+// //     .catch(error=>{
+// //         const errorCode = error.code ;
+// //         const errorMessage = error.message;
+// //         console.log(errorCode,errorMessage);
+
+// //     });
+
+// //   }
+
+// //  const handleEmailChange = (event) => setEmail(event.target.value);
+// //  const handlePasswordChange = (event) => setPassword (event.target.value);
+
+// //   return (
+// //     <section>
+// //       <div className="form-box">
+// //         <div className="form-value">
+// //           <h2>Login</h2>
+// //           <form>
+// //             {isSignUpActive && <legend>Sign up</legend>}
+// //             {!isSignUpActive && <legend>Sign in</legend>}
+// //             <fieldset>
+// //               <ul>
+// //                 <li>
+// //                   <label htmlFor="email">Email</label>
+// //                   <input type="email" id="email"onChange={handleEmailChange} required />
+// //                 </li>
+// //                 <li>
+// //                   <label htmlFor="email">Email</label>
+// //                   <input type="password" id="password" onChange={handlePasswordChange} required/>
+// //                 </li>
+// //               </ul>
+// //               {isSignUpActive && <button type="button" onClick={handleSignUp}>Sign up</button>}
+// //               {!isSignUpActive && <button type="button">Sign in</button>}
+// //             </fieldset>
+// //             {isSignUpActive && <a onClick={handleMethodChange}> Signup</a>}
+// //             {!isSignUpActive && (
+// //               <a onClick={handleMethodChange}> Cleat an account </a>
+// //             )}
+// //           </form>
+// //         </div>
+// //       </div>
+// //     </section>
+// //   );
+// // };
+// // export default LoginForm;
+    
+
+
+    
+// import React, { useState } from "react";
+// import firebase from 'firebase/compat/app'; // Import your Firebase configuration
+
+// const LoginForm = () => {
+//   const [isSignUpActive, setIsSignUpActive] = useState(false);
+//   const [formData, setFormData] = useState({
+//     email: '',
+//     password: ''
+//   });
+
+//   const handleMethodChange = () => {
+//     setIsSignUpActive(!isSignUpActive);
+//   };
+
+//   const handleChange = (e) => {
+//     setFormData({ ...formData, [e.target.id]: e.target.value });
+//   };
+
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     if (isSignUpActive) {
+//       // Sign up user
+//       firebase.auth().createUserWithEmailAndPassword(formData.email, formData.password)
+//         .then((userCredential) => {
+//           // User registered successfully
+//           var user = userCredential.user;
+//           console.log("User registered successfully:", user);
+//           // You can perform further actions here, like updating user profile, sending verification email, etc.
+//         })
+//         .catch((error) => {
+//           var errorCode = error.code;
+//           var errorMessage = error.message;
+//           console.error("Registration error:", errorMessage);
+//         });
+//     } else {
+//       // Sign in user
+//       firebase.auth().signInWithEmailAndPassword(formData.email, formData.password)
+//         .then((userCredential) => {
+//           // User signed in successfully
+//           var user = userCredential.user;
+//           console.log("User signed in successfully:", user);
+//           // You can redirect the user or perform further actions here
+//         })
+//         .catch((error) => {
+//           var errorCode = error.code;
+//           var errorMessage = error.message;
+//           console.error("Sign-in error:", errorMessage);
+//         });
+//     }
+//   };
+
+//   return (
+//     <section>
+//       <div className="form-box">
+//         <div className="form-value">
+//           <h2>{isSignUpActive ? 'Sign Up' : 'Sign In'}</h2>
+//           <form onSubmit={handleSubmit}>
+//             <fieldset>
+//               <ul>
+//                 <li>
+//                   <label htmlFor="email">Email</label>
+//                   <input type="email" id="email" onChange={handleChange} value={formData.email} />
+//                 </li>
+//                 <li>
+//                   <label htmlFor="password">Password</label>
+//                   <input type="password" id="password" onChange={handleChange} value={formData.password} />
+//                 </li>
+//               </ul>
+//               <button type="submit">{isSignUpActive ? 'Sign Up' : 'Sign In'}</button>
+//             </fieldset>
+//           </form>
+//           <p>
+//             {isSignUpActive ? 'Already have an account?' : 'Don\'t have an account?'}
+//             <a onClick={handleMethodChange}>{isSignUpActive ? ' Sign in' : ' Sign up'}</a>
+//           </p>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default LoginForm;
+
+
+// import React, { useState } from "react";
+// import "./styles/Login.css"; // Import your CSS file
+// import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"; // Import necessary Firebase authentication methods
+// import { getAuth } from "firebase/auth"; // Import getAuth from Firebase authentication
+// import firebase from 'firebase/compat/app'; // Import the main Firebase module
+
+// const LoginForm = () => {
+//   const [isSignUpActive, setIsSignUpActive] = useState(false);
+//   const [formData, setFormData] = useState({
+//     email: '',
+//     password: ''
+//   });
+
+//   const handleMethodChange = () => {
+//     setIsSignUpActive(!isSignUpActive);
+//   };
+
+//   const handleChange = (e) => {
+//     setFormData({ ...formData, [e.target.id]: e.target.value });
+//   };
+
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     const auth = getAuth(); // Initialize authentication
+
+//     if (isSignUpActive) {
+//       // Sign up user
+//       createUserWithEmailAndPassword(auth, formData.email, formData.password)
+//         .then((userCredential) => {
+//           // User registered successfully
+//           var user = userCredential.user;
+//           console.log("User registered successfully:", user);
+//           // You can perform further actions here, like updating user profile, sending verification email, etc.
+//         })
+//         .catch((error) => {
+//           var errorCode = error.code;
+//           var errorMessage = error.message;
+//           console.error("Registration error:", errorMessage);
+//         });
+//     } else {
+//       // Sign in user
+//       signInWithEmailAndPassword(auth, formData.email, formData.password)
+//         .then((userCredential) => {
+//           // User signed in successfully
+//           var user = userCredential.user;
+//           console.log("User signed in successfully:", user);
+//           // You can redirect the user or perform further actions here
+//         })
+//         .catch((error) => {
+//           var errorCode = error.code;
+//           var errorMessage = error.message;
+//           console.error("Sign-in error:", errorMessage);
+//         });
+//     }
+//   };
+
+//   return (
+//     <section>
+//       <div className="form-box">
+//         <div className="form-value">
+//           <h2>{isSignUpActive ? 'Sign Up' : 'Sign In'}</h2>
+//           <form onSubmit={handleSubmit}>
+//             <fieldset>
+//               <ul>
+//                 <li>
+//                   <label htmlFor="email">Email</label>
+//                   <input type="email" id="email" onChange={handleChange} value={formData.email} />
+//                 </li>
+//                 <li>
+//                   <label htmlFor="password">Password</label>
+//                   <input type="password" id="password" onChange={handleChange} value={formData.password} />
+//                 </li>
+//               </ul>
+//               <button type="submit">{isSignUpActive ? 'Sign Up' : 'Sign In'}</button>
+//             </fieldset>
+//           </form>
+//           <p>
+//             {isSignUpActive ? 'Already have an account?' : 'Don\'t have an account?'}
+//             <a onClick={handleMethodChange}>{isSignUpActive ? ' Sign in' : ' Sign up'}</a>
+//           </p>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default LoginForm;
+
+
+
+
+
+
+// import React, { useState } from "react";
+// import firebase from 'firebase/compat/app'; // Import Firebase
+// import 'firebase/compat/auth';
+//  // Import Firebase Auth if you're using authentication
+
+// const Login = () => {
+//   const [name, setName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [phoneNumber, setPhoneNumber] = useState("");
+//   const [vehicleType, setVehicleType] = useState("");
+
+//   // Function to handle signup
+//   const handleSignUp = () => {
+//     // Implement your signup logic here using Firebase authentication
+//     // Example:
+//     // eslint-disable-next-line no-undef
+//     firebase.auth().createUserWithEmailAndPassword(email,password)
+//       .then((userCredential) => {
+//         // User registered successfully
+//         const user = userCredential.user;
+//         console.log("User registered successfully:", user);
+//         // You can perform further actions here, like updating user profile, sending verification email, etc.
+//       })
+//       .catch((error) => {
+//         const errorCode = error.code;
+//         const errorMessage = error.message;
+//         console.error("Registration error:", errorMessage);
+//       });
+//   };
+
+//   return (
+//     <div className="container">
+//       <div className="form">
+//         <h2>Sign Up</h2>
+//         <div className="box">
+//           <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+//         </div>
+//         <div className="box">
+//           <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+//         </div>
+//         <div className="box">
+//           <input type="number" placeholder="Phone number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+//         </div>
+//         <div className="box">
+//           <input type="password" placeholder="password" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+//         </div>
+//         <div className="box">
+//           <label>Vehicle Type:</label>
+//           <select
+//             value={vehicleType}
+//             onChange={(e) => setVehicleType(e.target.value)}
+//             required
+//           >
+//             <option value="">Select Vehicle Type</option>
+//             <option value="car">Car</option>
+//             <option value="van">Van</option>
+//             <option value="bike">Bike</option>
+//             <option value="truck">Truck</option>
+//           </select>
+//         </div>
+//         <button onClick={handleSignUp}>Sign Up</button>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default Login;
+
+//////////////////////////////////////registration  form start here///////////////////////////
+/
+/
+
+// import React, { useState } from "react";
+// import { db } from '../FirebaseConfig/Firebase';
+// import './styles/Login.css';
+// import { Link } from 'react-router-dom';
+// import { addDoc, collection } from 'firebase/firestore';
+
+// const Registration = () => {
+//   const [name, setName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [vehiclenumber, setVehicleNumber] = useState("");
+//   const [phoneNumber, setPhoneNumber] = useState('');
+//   const dbref = collection(db, "Auth");
+
+//   const Registration = async () => {
+//     await addDoc(dbref, {
+//       Name: name,
+//       Email: email,
+//       Password: password, // Fixed typo: "Pssword" to "Password"
+//       VehicleNumber: vehiclenumber, // Fixed typo: "Vehiclenumber" to "VehicleNumber"
+//       PhoneNumber: phoneNumber // Fixed typo: "phoneNumber" to "PhoneNumber"
+//     });
+//   }
+
+//   return (
+//     <div className="container">
+//       <div className="form">
+//         <h2>Registration</h2>
+//         <div className="box">
+//           <input type="text" placeholder="Name" onChange={(e) => setName(e.target.value)}></input>
+//         </div>
+//         <div className="box">
+//           <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)}></input>
+//         </div>
+//         <div className="box">
+//           <input type="number" placeholder="Phone Number" onChange={(e) => setPhoneNumber(e.target.value)}></input>
+//         </div>
+//         <div className="box">
+//           <input type="number" placeholder="Vehicle Number" onChange={(e) => setVehicleNumber(e.target.value)}></input>
+//         </div>
+//         <div className="box">
+//           <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}></input>
+//         </div>
+//         <p>Already have an account? <Link to='/login'>Sign in</Link></p>
+//         <button onClick={Registration}>SignUp</button>
+//       </div>
+//     </div>
+//   )
+// }
+
+// export default Registration;
+
