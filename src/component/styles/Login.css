@@ -163,30 +163,38 @@ button {
 } */
 
 
-.app {
+.container {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 70%;
     height: 100vh;
-    background: linear-gradient(
-        rgba(255, 255, 255, 0.7),
-        rgba(255, 255, 255, 0.3)
-      ),
-      url("https://images.pexels.com/photos/114979/pexels-photo-114979.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500");
     background-size: cover;
     background-position: center;
   }
   
   form{
-      background-color: white;
-      padding: 0px 60px;
-      border-radius: 10px;
+      background-color: rgb(66, 66, 66);
   }
   
-  h1{
-      color: rgb(77, 1, 77);
+  h2{
+      color: rgb(12, 14, 57);
       text-align: center;
   }
+  .box{
+    position: relative;
+    width:50%;
+    height: 50%;
+    background: transparent;
+    border: 10px;
+    border-radius: 20px;
+    backdrop-filter: blur(15px) brightness(80%);
+    display: flex;
+    align-items: center;
+    background-color: rgb(136, 134, 134);
+  
+  }
+
   
   button{
       width: 100%;
@@ -201,7 +209,12 @@ button {
       cursor: pointer;
       margin-top: 15px;
       margin-bottom: 30px;
+
+      .hover{
+        background-color: rgb(156, 91, 222);
+      }
   }
+  
 
 
 @media screen and (max-width: 480px) {
