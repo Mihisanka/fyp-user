@@ -47,19 +47,6 @@ html {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   margin: 8px;
 }
-/******************************* About Me Card ******************************
-.about-box {
-  flex-basis: calc(50% - 20px);
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  align-items: right;
-  width: 600px;
-  height: 400px;
-  
-}*/
 
 .about-txt{
   text-align: center; /* Center-align the text */
@@ -128,16 +115,111 @@ html {
   background-color: #555;
 }
 
-@media screen and (max-width: 950px) {
-  .column {
-    width: 100%;
-    display: block;
+/*card info*/
+
+.card-info {
+  width: 190px;
+  height: 254px;
+  background: #3405a3;
+  border-radius: 15px;
+  box-shadow: 1px 5px 60px 0px #100a886b;
+  margin-left:30px;
+  align-items: center;
+  
+ }
+ 
+ .card-info .card-border-top {
+  width: 60%;
+  height: 3%;
+  background: #6b64f3;
+  margin: auto;
+  border-radius: 0px 0px 15px 15px;
+ }
+ 
+ .card-info span {
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  display: block;
+  padding-top: 10px;
+  font-size: 16px;
+ }
+ 
+ .card-info .job {
+  font-weight: 400;
+  color: white;
+  display: block;
+  text-align: center;
+  padding-top: 3px;
+  font-size: 12px;
+ }
+ 
+ .card-info .img {
+  width: 70px;
+  height: 80px;
+  background: #6b64f3;
+  border-radius: 15px;
+  margin: auto;
+  margin-top: 25px;
+ }
+ 
+ .card-info button {
+  padding: 8px 25px;
+  display: block;
+  margin: auto;
+  border-radius: 8px;
+  border: none;
+  margin-top: 30px;
+  background: #6b64f3;
+  color: white;
+  font-weight: 600;
+ }
+ 
+ .card-info button:hover {
+  background: #534bf3;
+ }
+
+ @media(max-width:736px){
+  .contact-form .main{
+      flex-direction: column;
+  }
+  .contact-form form{
+      margin-top: 30px;
+      margin-bottom: 10px;
+
+  }
+  .form-img{
+      border-radius: 0;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      order: 2;
+  }
+  .content{
+      order: 1;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
   }
 }
 
 
 
 
+/******************************* About Me Card ******************************
+.about-box {
+  flex-basis: calc(50% - 20px);
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  align-items: right;
+  width: 600px;
+  height: 400px;
+  
+}*/
+
+
+/* 
 .info-cards{
   width:80%;
   max-width:400px;
@@ -230,8 +312,8 @@ html {
   border-radius: 50px;
   width: 100px;
   height: 100px;
-}
-.card-info__description span{
+} */
+/* .card-info__description span{
   color:#3b9af1
 }
 .card-info__advice{
@@ -243,4 +325,4 @@ html {
   font-weight:700;
   margin:15px auto
 }
-  
+   */

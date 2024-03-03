@@ -29,43 +29,35 @@ function AboutPage() {
       </div>
 
 
+      
+
+
       <div  class="team-member">
       <h2 className="team-heading">Our Team</h2>
       </div>
 
       <div className="About-row">
-       
-      <div className="info-card">
-              <h4 className="info-card__title">
-                Convenience and Accessibility
-              </h4>
-              <img
-                src="../assets/traverse-assets/benefits1.svg"
-                alt=""
-                className="info-card__icon"
-              />
-              <p className="info-card__description">
-                Allows virtual exploration of diverse physical locations, providing accessibility 
-                without time or location constraints.
-              </p>
-            </div>
+              <div class="card-info">
+                  <div class="card-border-top">
+                  </div>
+                  <div class="img">
+                  </div>
+                  <span>Mihisanka</span>
+                  <p class="job"> Job Title</p>
+                  <button> Click
+                  </button>
+              </div>
 
-
-
-            <div className="info-card">
-              <h4 className="info-card__title">
-                Convenience and Accessibility
-              </h4>
-              <img
-                src="../assets/traverse-assets/benefits1.svg"
-                alt=""
-                className="info-card__icon"
-              />
-              <p className="info-card__description">
-                Allows virtual exploration of diverse physical locations, providing accessibility 
-                without time or location constraints.
-              </p>
-            </div>
+              <div class="card-info">
+                  <div class="card-border-top">
+                  </div>
+                  <div class="img">
+                  </div>
+                  <span>Nayani</span>
+                  <p class="job"> Job Title</p>
+                  <button> Click
+                  </button>
+              </div>
       </div>
     </div>
   );

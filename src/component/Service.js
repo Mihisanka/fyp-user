@@ -3,7 +3,7 @@ import './styles/Service.css'; // Import your CSS file directly without assignin
 
 const ServiceCard = ({ iconClass, title, description }) => {
     return (
-        <div className="card">
+        <div className="service-card">
             <i className={iconClass}></i>
             <h2>{title}</h2>
             <p>{description}</p>

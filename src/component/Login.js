@@ -8,7 +8,7 @@ import { getDocs, collection, where, query } from 'firebase/firestore';
 
 const Login = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState ("");
 
   const login = async (e) => {
     e.preventDefault(); // Prevent the default form submission
@@ -34,24 +34,46 @@ const Login = () => {
   }
 
   return (
-    <div className="container">
-      <div className="form">
-        <h2>Login</h2>
-        <div className="box">
-          <input type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)}></input>
+    <div class="body">
+          <div class="container">
+                <form>
+                    <div class="head">
+                          <span>Sign up</span>
+                          <p>Create a free account with your email.</p>
+                      </div>
+                      <div class="inputs">
+                      <input type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)}>
+                      </input>
+                      </div>
+                      <div class="inputs">
+                      <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}>
+                      </input>
+                      </div>
+                    <button onClick={login}>SignIn</button>
+                  </form>
+                  <div class="form-footer"> 
+                <p>Don't have an account? <Link to='/registration'>Sign Up</Link> </p>
+            </div>
         </div>
-        <div className="box">
-          <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}></input>
-        </div>
-        <p>Don't have an account? <Link to='/registration'>Sign Up</Link> </p>
-        <button onClick={login}>SignIn</button>
-      </div>
+
     </div>
   );
 };
 
 export default  Login;
 
-
-
+    
+    // <div className="container">
+    //   <div className="form">
+    //     <h2>Login</h2>
+    //     <div className="box">
+    //       <input type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)}></input>
+    //     </div>
+    //     <div className="box">
+    //       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}></input>
+    //     </div>
+    //     <p>Don't have an account? <Link to='/registration'>Sign Up</Link> </p>
+    //     <button onClick={login}>SignIn</button>
+    //   </div>
+    // </div>
 
