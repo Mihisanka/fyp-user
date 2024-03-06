@@ -1,50 +1,63 @@
+import React, { useEffect } from "react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css"; // Import Leaflet CSS
 
-// import React from "react";
+const Booking = () => {
+  useEffect(() => {
+    // Initialize Leaflet map only if it's not already initialized
+    const mapContainer = document.getElementById("map");
+    if (!mapContainer?._leaflet_id) {
+      const map = L.map(mapContainer).setView([7.8731, 80.7718], 7);
 
-// function BookingPage() {
-//   return (
-//     <div className="recommend__car-card">
-//       <div className="recommend__car-top">
-//         <h5>
-//           <span>
-//             <i class="ri-refresh-line"></i>
-//           </span>
-//           {/*percentage*/}% Recommended
-//         </h5>
-//       </div>
+      // Add a tile layer (OpenStreetMap)
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+      }).addTo(map);
+    }
+  }, []);
 
-//       <div className="recommend__car-img">
-//         <img src={imgUrl} alt="" />
-//       </div>
-//       <div className="recommend__car-bottom">
-//         <h4>{carName}</h4>
-//         <div className="recommend__car-other">
-//           <div className="recommend__icons">
-//             <p>
-//               <i class="ri-repeat-line"></i>
-//               {retweet}k
-//             </p>
-//             <p>
-//               <i class="ri-settings-2-line"></i>
-//             </p>
-//             <p>
-//               <i class="ri-timer-flash-line"></i>
-//             </p>
-//           </div>
-//           <span>rs.{rentPrice}/h</span>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
+  useEffect(() => {
+    // Resize the map when the window size changes
+    const resizeMap = () => {
+      const map = document.getElementById("map");
+      if (map) {
+        const aboutSection = map.parentElement;
+        const height = aboutSection.offsetHeight;
+        const width = aboutSection.offsetWidth;
+        map.style.height = height + "px";
+        map.style.width = width + "px";
 
-// export default BookingPage;
-import React from 'react';
+        const leafletMap = map._leaflet_map;
+        if (leafletMap) {
+          leafletMap.invalidateSize();
+        }
+      }
+    };
 
-const BookingPage = () => {
+    window.addEventListener("resize", resizeMap);
+    resizeMap(); // Call initially
+    return () => window.removeEventListener("resize", resizeMap); // Cleanup
+  }, []);
+
+  useEffect(() => {
+    const map = document.getElementById("map");
+    if (map) {
+      const leafletMap = map._leaflet_map;
+      if (leafletMap) {
+        leafletMap.getCanvas().toBlob((blob) => {
+          const img = document.createElement("img");
+          img.src = URL.createObjectURL(blob);
+          map.appendChild(img);
+        });
+      }
+    }
+  }, []);
+
   return (
-    <div>BookingPage</div>
+    <div className="test">
+      <div id="map" style={{ width: "100%", height: "1090px" }}></div>
+    </div>
   );
 };
 
-export default BookingPage;
+export default Booking;
