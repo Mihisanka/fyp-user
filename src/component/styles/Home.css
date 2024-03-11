@@ -12,6 +12,13 @@
   background-repeat: no-repeat;
 }
 
+
+.home-background {
+  background-image: url('../Assets/home2.jpg'); /* Path to your background image */
+  background-size: cover;
+  background-position: center;
+  height: auto; /* Adjust height as needed */
+}
 .home-heading h4 {
   text-align: center;
   color: rgb(4, 214, 175);
