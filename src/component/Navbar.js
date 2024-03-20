@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import "./styles/Navbar.css";
+import profileImg from "../component/Assets/profile-02.png";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -37,17 +38,17 @@ const Navbar = () => {
               About
             </NavLink>
           </li>
-          <li>
+          <li className="profile">
             <NavLink to="/login" activeClassName="active-link">
-              Login
+            <img src={profileImg} alt="" />
             </NavLink>
           </li>
         </ul>
-        <div className="menu-icon" onClick={toggleMenu}>
+        {/* <div className="menu-icon" onClick={toggleMenu}>
           <div className="bar"></div>
           <div className="bar"></div>
           <div className="bar"></div>
-        </div>
+        </div> */}
       </div>
     </nav>
   );

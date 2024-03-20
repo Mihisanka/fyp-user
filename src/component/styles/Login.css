@@ -67,6 +67,7 @@
     border-radius: 15px;
     overflow: hidden;
     padding-top: 30px;
+    margin-top: 7%;
   }
   
   form {
@@ -97,13 +98,13 @@
   }
   
   form .inputs {
-    /* overflow: hidden;
+    overflow: hidden;
     background-color: #fff;
     width: 100%;
     margin: 1rem 0.5rem;
     border-radius: 8px;
     border-bottom: none;
-    outline: 0; */
+    outline: 0;
     max-width: 400px;
     padding: 1rem;
     border-radius: 1rem;
@@ -125,8 +126,9 @@
   form button {
     background-color: #4287ef;
     color: white;
-    width: 100%;
+    width: 75%;
     height: 40px;
+    margin-top: 10%;
     padding-top: 8px;
     padding-bottom: 8px;
     border: 0;
