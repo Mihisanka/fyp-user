@@ -725,4 +725,926 @@
 
 // export default Login;
 
+/////////////////////////////////////////login  2/////////////////////////////////
+
+// import React, { useState } from "react";
+// import "./styles/Login.css";
+// import { Link } from 'react-router-dom';
+// import { db } from '../FirebaseConfig/Firebase';
+// import { getDocs, collection, where, query } from 'firebase/firestore';
+
+// const Login = () => {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState ("");
+
+//   const login = async (e) => {
+//     e.preventDefault(); // Prevent the default form submission
+
+//     const dbref = collection(db, "Auth");
+//     try {
+//       const emailMatch = query(dbref, where('Email', '==', email));
+//       const passwordMatch = query(dbref, where('Password', '==', password));
+//       const emailSnapshot = await getDocs(emailMatch);
+//       const emailArray = await emailSnapshot.docs.map((doc) => doc.data());
+//       const passwordSnapshot = await getDocs(passwordMatch);
+//       const passwordArray = passwordSnapshot.docs.map((doc) => doc.data());
+
+//       if (emailArray.length > 0 && passwordArray.length > 0) {
+//         alert('Login successful');
+       
+//       } else {
+//         alert('invalid user name  password');
+//       }
+//     } catch (error) {
+//       console.error('Login error:', error);
+//     }
+//   }
+
+//   return (
+//     <div class="body">
+//           <div class="container">
+//                 <form>
+//                     <div class="head">
+//                           <span>Sign up</span>
+//                           <p>Create a free account with your email.</p>
+//                       </div>
+//                       <div class="inputs">
+//                       <input type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)}>
+//                       </input>
+//                       </div>
+//                       <div class="inputs">
+//                       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}>
+//                       </input>
+//                       </div>
+//                     <button onClick={login}>SignIn</button>
+//                   </form>
+//                   <div class="form-footer"> 
+//                 <p>Don't have an account? <Link to='/registration'>Sign Up</Link> </p>
+//             </div>
+//         </div>
+
+//     </div>
+//   );
+// };
+
+// export default  Login;
+
+    
+//     // <div className="container">
+//     //   <div className="form">
+//     //     <h2>Login</h2>
+//     //     <div className="box">
+//     //       <input type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)}></input>
+//     //     </div>
+//     //     <div className="box">
+//     //       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}></input>
+//     //     </div>
+//     //     <p>Don't have an account? <Link to='/registration'>Sign Up</Link> </p>
+//     //     <button onClick={login}>SignIn</button>
+//     //   </div>
+//     // </div>
+
 ////////////////////////////////////////login successful  end ////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////Bokking page /////////////////////////////////////////////////////////////
+// import React, { useEffect } from "react";
+// import L from "leaflet";
+// import "leaflet/dist/leaflet.css"; // Import Leaflet CSS
+
+// const Booking = () => {
+//   useEffect(() => {
+//     // Initialize Leaflet map only if it's not already initialized
+//     const mapContainer = document.getElementById("map");
+//     if (!mapContainer?._leaflet_id) {
+//       const map = L.map(mapContainer).setView([7.8731, 80.7718], 7);
+
+//       // Add a tile layer (OpenStreetMap)
+//       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+//         attribution: "© OpenStreetMap contributors",
+//       }).addTo(map);
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     // Resize the map when the window size changes
+//     const resizeMap = () => {
+//       const map = document.getElementById("map");
+//       if (map) {
+//         const aboutSection = map.parentElement;
+//         const height = aboutSection.offsetHeight;
+//         const width = aboutSection.offsetWidth;
+//         map.style.height = height + "px";
+//         map.style.width = width + "px";
+
+//         const leafletMap = map._leaflet_map;
+//         if (leafletMap) {
+//           leafletMap.invalidateSize();
+//         }
+//       }
+//     };
+
+//     window.addEventListener("resize", resizeMap);
+//     resizeMap(); // Call initially
+//     return () => window.removeEventListener("resize", resizeMap); // Cleanup
+//   }, []);
+
+//   useEffect(() => {
+//     const map = document.getElementById("map");
+//     if (map) {
+//       const leafletMap = map._leaflet_map;
+//       if (leafletMap) {
+//         leafletMap.getCanvas().toBlob((blob) => {
+//           const img = document.createElement("img");
+//           img.src = URL.createObjectURL(blob);
+//           map.appendChild(img);
+//         });
+//       }
+//     }
+//   }, []);
+
+//   return (
+//     <div className="test">
+//       <div id="map" style={{ width: "100%", height: "1090px" }}></div>
+//     </div>
+//   );
+// };
+
+// export default Booking;
+
+// import React, { useState, useEffect } from "react";
+// import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+// import L from "leaflet";
+// import "leaflet/dist/leaflet.css";
+// import { ref, onValue, off, db1, set } from "../FirebaseConfig/Firebase.js";
+// import {
+//   MDBModal,
+//   MDBModalBody,
+//   MDBModalHeader,
+//   MDBModalFooter,
+//   MDBBtn,
+// } from "mdb-react-ui-kit";
+
+// const Booking = () => {
+//   const [carparkData, setCarparkData] = useState([]);
+//   const [error, setError] = useState(null);
+//   const [filter, setFilter] = useState("all");
+//   const [showModal, setShowModal] = useState(false);
+//   const [selectedCarpark, setSelectedCarpark] = useState(null);
+
+//   useEffect(() => {
+//     const fetchData = () => {
+//       const carparkRef = ref(db1);
+//       const listener = onValue(
+//         carparkRef,
+//         (snapshot) => {
+//           try {
+//             if (snapshot && snapshot.exists()) {
+//               const data = snapshot.val();
+//               const carparkArray = Object.keys(data).map((key) => ({
+//                 id: key,
+//                 ...data[key],
+//               }));
+//               setCarparkData(carparkArray);
+//               setError(null);
+//             } else {
+//               setCarparkData([]);
+//               setError("No data available");
+//             }
+//           } catch (error) {
+//             setError(error.message);
+//           }
+//         },
+//         (error) => {
+//           setError(error.message);
+//         }
+//       );
+
+//       const interval = setInterval(fetchData, 5000);
+
+//       return () => {
+//         off(carparkRef, "value", listener);
+//         clearInterval(interval);
+//       };
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   const handleFilterChange = (event) => {
+//     setFilter(event.target.value);
+//     setShowModal(false);
+//   };
+
+//   const filterData = () => {
+//     return filter === "all"
+//       ? carparkData
+//       : carparkData.filter((marker) => marker.availability === filter);
+//   };
+
+//   const toggleModal = () => {
+//     setShowModal(!showModal);
+//   };
+
+//   const customIcon = (availability) => {
+//     const fillColor = availability === "unavailable" ? "red" : "green";
+//     return L.divIcon({
+//       className: "custom-div-icon",
+//       html: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="${fillColor}" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+//               <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+//             </svg>`,
+//     });
+//   };
+
+//   const handleBookClick = (marker) => {
+//     setSelectedCarpark(marker);
+//     setShowModal(true);
+//   };
+
+//   const handleBookCarpark = (id, marker, e) => {
+//     e.stopPropagation();
+
+//     if (!marker || !marker.uuid) {
+//       console.error("Invalid selected carpark");
+//       return;
+//     }
+
+//     // Convert marker.uuid to string explicitly
+//     const carparkRef = ref(db1, String(marker.uuid));
+//     const updatedBookings = (marker.booking || 0) + 1;
+
+//     set(carparkRef, { bookings: updatedBookings })
+//       .then(() => {
+//         console.log("Document successfully updated!");
+//         setSelectedCarpark(null);
+//         setShowModal(false);
+//       })
+//       .catch((error) => {
+//         console.error("Error updating document:", error);
+//         setError("Error updating document: " + error.message);
+//       });
+//   };
+
+//   return (
+//     <div id="map" style={{ width: "100%", height: "1090px" }}>
+//       <div className="filter form-group">
+//         <label htmlFor="filter" className="label">
+//           Filter by Availability :
+//         </label>
+//         <select
+//           id="filter"
+//           className="form-control"
+//           value={filter}
+//           onChange={handleFilterChange}
+//         >
+//           <option value="all">All</option>
+//           <option value="available">Available</option>
+//           <option value="unavailable">Unavailable</option>
+//         </select>
+//       </div>
+//       <MDBModal show={showModal} onHide={toggleModal}>
+//         <MDBModalHeader>Book Carpark</MDBModalHeader>
+//         <MDBModalBody>
+//           {selectedCarpark && (
+//             <>
+//               <h2>{selectedCarpark.carparkName}</h2>
+//               <p>Enter number of hours:</p>
+//               <input
+//                 type="number"
+//                 value={selectedCarpark.bookings || ""}
+//                 onChange={(e) =>
+//                   setSelectedCarpark({
+//                     ...selectedCarpark,
+//                     bookings: parseInt(e.target.value, 10),
+//                   })
+//                 }
+//               />
+//             </>
+//           )}
+//         </MDBModalBody>
+//         <MDBModalFooter>
+//           <MDBBtn color="secondary" onClick={toggleModal}>
+//             Close
+//           </MDBBtn>
+//           <MDBBtn
+//             color="primary"
+//             onClick={(e) =>
+//               handleBookCarpark(selectedCarpark.id, selectedCarpark, e)
+//             }
+//           >
+//             Book
+//           </MDBBtn>
+//         </MDBModalFooter>
+//       </MDBModal>
+//       {carparkData.length === 0 ? (
+//         <p>Loading...</p>
+//       ) : (
+//         <MapContainer
+//           center={[7.8731, 80.7718]}
+//           zoom={8}
+//           style={{ width: "100%", height: "800px" }}
+//         >
+//           <TileLayer
+//             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+//             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+//           />
+//           {filterData().map((marker) => (
+//             <Marker
+//               key={marker.id}
+//               position={[
+//                 parseFloat(marker.latitude),
+//                 parseFloat(marker.longitude),
+//               ]}
+//               icon={customIcon(marker.availability)}
+//             >
+//               <Popup>
+//                 <div>
+//                   <h2>{marker.carparkName}</h2>
+//                   <p
+//                     style={{
+//                       color:
+//                         marker.availability === "available" ? "green" : "red",
+//                     }}
+//                   >
+//                     Availability :{" "}
+//                     {marker.availability.charAt(0).toUpperCase() +
+//                       marker.availability.slice(1)}
+//                   </p>
+//                   <p>Price : Rs.{marker.price}.00</p>
+//                   <p>Latitude: {marker.latitude}</p>
+//                   <p>Longitude: {marker.longitude}</p>
+//                   <p>Bookings :{marker.bookings || 0}</p>
+//                   <button onClick={() => handleBookClick(marker)}>Book</button>
+//                 </div>
+//               </Popup>
+//             </Marker>
+//           ))}
+//         </MapContainer>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default Booking;
+
+//////////////////////////////////////////////booking end////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////home page ////////////////////////////////////////////////////////////
+// import React from 'react';
+// import './styles/Home.css';
+// import Services from './Service';
+// import AboutPage from './AboutPage';
+// import Footer from './Footer';
+// import ContactForm from './ContactForm';
+// //import Footer from './Footer';
+
+// function HomePage() {
+//   return (
+//     <>
+//       <div className="homepage">
+//         <div className="home-heading">
+//           <h4>Park Cloud</h4>
+//         </div>
+
+//         <div className="home-sub-heading">
+//           <p style={{ color: "black" }}>
+//             <b>Your trusted destination for hassle-free parking solutions.</b>
+//           </p>
+//         </div>
+//       </div>  
+
+//           <>
+//           <Services/>
+//           </>
+//           <>
+//           <AboutPage/>
+//           </>
+//           <>
+//           <ContactForm/>
+//           </>
+
+//           <>
+//           <Footer/>
+//           </>
+        
+//     </>
+//   );
+// }
+
+// export default HomePage;
+
+
+//////////////////////////////////////////////////home page end ///////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////registation page'///////////////////////////////////////////////////////////////
+
+// // import React, { useState } from "react";
+// // import {db} from '../FirebaseConfig/Firebase';
+// // import './styles/Login.css';
+// // import {Link} from 'react-router-dom';
+// // import {getDocs, addDoc ,collection,where,query} from  'firebase/firestore';
+
+// // const  Registration = () => {
+
+// //   const[name, setName] = useState("");
+// //   const [email, setEmail] = useState("");
+// //   const [password, setPassword] = useState("");
+// //   const [vehiclenumber, setVehicleNumber] = useState("");
+// //   const[phoneNumber,setPhoneNumber]=useState('');
+// //   const dbref =collection(db,"Auth")
+// //   const [metch,setMetch] = useState([])
+// //   const registration = async ()=>{
+// //     const matchEmail = query(dbref, where("Email", "==", email))
+// //     try{
+// //         const snapshot = await  getDocs(matchEmail);
+// //         const  emailMatchingArray = snapshot.docs.map((doc)=> doc.data());
+// //         if (emailMatchingArray.length>0)
+// //         {
+// //           alert(`This Email is already registered`);
+// //         }
+// //          else{
+// //           await addDoc (dbref,{Name:name,Email:email,Password:password,Vehiclenumber:vehiclenumber,Phonenumber: phoneNumber})
+// //           }
+// //     }catch (error) 
+// //     {
+// //           alert (error.message);
+// //     }
+   
+// //    }
+    
+// //   }
+
+// //   return(
+// //     <div className="container">
+// //       <div className=" form ">
+// //         <h2>Registration</h2>
+// //         <div className="box">
+// //           <input  type="text" placeholder="Name" onChange={(e) =>setName(e.target.value)}></input>
+// //         </div>
+// //         <div className="box">
+// //           <input  type="email" placeholder="Email" onChange={(e) =>setEmail(e.target.value)}></input>
+// //         </div>
+// //         <div className="box">
+// //           <input  type="password" placeholder="password"onChange={(e) =>  setPassword (e.target.value)} ></input>
+// //         </div>
+// //         <div className="box">
+// //           <input  type="number" placeholder="vehicle number" onChange={(e) =>  setVehicleNumber (e.target.value)}></input>
+// //         </div>
+// //         <div className="box">
+// //           <input  type="number" placeholder="Phone Number" onChange={(e) =>setPhoneNumber(e.target.value)}></input>
+// //         </div>
+        
+        
+// //         <p>Already Have an account <Link to ='/login'>Sign in </Link> </p>
+// //         <button onClick={registration}>SignUp</button>
+// //       </div>
+// //     </div>
+// //   )
+// // }
+
+// // export default Registration;
+
+
+
+// import React, { useState } from "react";
+// import { db } from '../FirebaseConfig/Firebase';
+// import './styles/Registration.css';
+// import { Link } from 'react-router-dom';
+// import { getDocs, addDoc, collection, where, query } from 'firebase/firestore';
+
+// const Registration = () => {
+//   const [name, setName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [vehiclenumber, setVehicleNumber] = useState("");
+//   const [phoneNumber, setPhoneNumber] = useState('');
+//   const dbref = collection(db, "Auth");
+//   const [metch, setMetch] = useState([]);
+
+//   const registration = async () => {
+//     const matchEmail = query(dbref, where("Email", "==", email));
+//     try {
+//       const snapshot = await getDocs(matchEmail);
+//       const emailMatchingArray = snapshot.docs.map((doc) => doc.data());
+//       if (emailMatchingArray.length > 0) {
+//         alert(`This Email is already registered`);
+//       } else {
+//         await addDoc(dbref, { Name: name, Email: email, Password: password, Vehiclenumber: vehiclenumber, Phonenumber: phoneNumber });
+//         alert ("Registration successful")
+//       }
+//     } catch (error) {
+//       alert(error.message);
+//     }
+//   }
+
+//   return (
+//     <div className="container">
+  
+//             <div className="head">
+//               <h2>Registration</h2>
+//               <div className="inputs">
+//                 <input type="text" placeholder="Name" onChange={(e) => setName(e.target.value)}></input>
+//               </div>
+//               <div className="inputs">
+//                 <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)}></input>
+//               </div>
+//               <div className="inputs">
+//                 <input type="password" placeholder="password" onChange={(e) => setPassword(e.target.value)}></input>
+//               </div>
+//               <div className="inputs">
+//                 <input type="number" placeholder="vehicle number" onChange={(e) => setVehicleNumber(e.target.value)}></input>
+//               </div>
+//               <div className="inputs">
+//                 <input type="number" placeholder="Phone Number" onChange={(e) => setPhoneNumber(e.target.value)}></input>
+//               </div>
+//               <button onClick={registration}>SignUp</button>
+//               <div class="form-footer">
+            
+//             <p>Already Have an account <Link to='/login'>Sign in </Link> </p>
+//             </div>
+//             </div>
+// {/* 
+//             <form>
+//                 <div class="head">
+//                     <span>Registration</span>
+//                     <p>Create a free account with your email.</p>
+//                 </div>
+//                 <div class="inputs">
+//                 <input type="text" placeholder="Name" onChange={(e) => setName(e.target.value)}></input>
+//                 <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)}></input>
+//                 <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}></input>
+//                 <input type="number" placeholder="vehicle number" onChange={(e) => setVehicleNumber(e.target.value)}></input>
+//                  <input type="number" placeholder="Phone Number" onChange={(e) => setPhoneNumber(e.target.value)}></input>
+//                 </div>
+//                 <button onClick={registration}>SignUp</button>
+//             </form>
+//             <div class="form-footer">
+            
+//             <p>Already Have an account <Link to='/login'>Sign in </Link> </p>
+//             </div> */}
+
+
+//     </div>
+//   );
+// }
+
+// export default Registration;
+
+///////////////////////////////////////////////// Registration end //////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////booking slot////////////////////////////////////////////////////////////////////////
+// import React, { useState } from "react";
+// import { db2 } from "../FirebaseConfig/Firebase";
+// import "./styles/Registration.css";
+// import { Link } from "react-router-dom";
+// import { getDocs, addDoc, collection, where, query } from "firebase/firestore";
+
+// const Registration = () => {
+//   const [name, setName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [vehiclenumber, setVehicleNumber] = useState("");
+//   const [phoneNumber, setPhoneNumber] = useState("");
+//   const db2ref = collection(db2, "booking");
+//   const [metch, setMetch] = useState([]);
+
+//   const registration = async () => {
+//     const matchEmail = query(db2ref, where("Email", "==", email));
+//     try {
+//       const snapshot = await getDocs(matchEmail);
+//       const emailMatchingArray = snapshot.docs.map((doc) => doc.data());
+//       if (emailMatchingArray.length > 0) {
+//         alert(`Booking unsuccessful `);
+//       } else {
+//         await addDoc(db2ref, {
+//           Name: name,
+//           Email: email,
+//           Password: password,
+//           Vehiclenumber: vehiclenumber,
+//           Phonenumber: phoneNumber,
+//         });
+//         alert("Booking  successful");
+//       }
+//     } catch (error) {
+//       alert(error.message);
+//     }
+//   };
+
+//   return (
+//     <div className="container">
+//       <div className="head">
+//         <h2>Booking</h2>
+//         <div className="inputs">
+//           <input
+//             type="text"
+//             placeholder="Name"
+//             onChange={(e) => setName(e.target.value)}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <input
+//             type="email"
+//             placeholder="Email"
+//             onChange={(e) => setEmail(e.target.value)}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <input
+//             type="password"
+//             placeholder="password"
+//             onChange={(e) => setPassword(e.target.value)}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <input
+//             type="number"
+//             placeholder="vehicle number"
+//             onChange={(e) => setVehicleNumber(e.target.value)}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <input
+//             type="number"
+//             placeholder="Phone Number"
+//             onChange={(e) => setPhoneNumber(e.target.value)}
+//           ></input>
+//         </div>
+//         <button onClick={registration}>Booking</button>
+//         <div class="form-footer">
+//           <p>
+//              <Link to="/booking">Booking</Link>{" "}
+//           </p>
+//         </div>
+//       </div>
+
+//     </div>
+//   );
+// };
+
+// export default Registration;
+
+
+
+// // ParkingLotPage.js
+
+// import React, { useState, useEffect } from 'react';
+// import { Link } from 'react-router-dom';
+// import "./styles/Registration.css";
+// // import { db2 } from "../FirebaseConfig/Firebase"; // Import Firebase get function
+
+// const ParkingLotPage = () => {
+//   const [name, setName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [vehiclenumber, setVehicleNumber] = useState("");
+//   const [phoneNumber, setPhoneNumber] = useState("");
+
+//   const [metch, setMetch] = useState([]);
+
+//   return (
+//     <div className="container">
+//       <div className="head">
+//         <h2>Booking</h2>
+//         <div className="inputs">
+//           <input type="text" placeholder="Name" onChange={(e) => setName(e.target.value)}></input>
+//         </div>
+//         <div className="inputs">
+//           <input type="time "placeholder="time"onChange={(e) => setEmail(e.target.value)}></input>
+//         </div>
+//         <div className="inputs">
+//           <input type="password"placeholder="password"onChange={(e) => setPassword(e.target.value)}></input>
+//         </div>
+//         <div className="inputs">
+//           <input type="number"placeholder="vehicle number"onChange={(e) => setVehicleNumber(e.target.value)}></input>
+//         </div>
+//         <div className="inputs">
+//           <input type="number"placeholder="Phone Number"onChange={(e) => setPhoneNumber(e.target.value)}></input>
+//         </div>
+//         <button >booking</button>
+//         {/* <div class="form-footer">
+//           <p>
+//             Already Have an account <Link to="/booking">Sign in </Link>{" "}
+//           </p>
+//         </div> */}
+//       </div>
+
+//     </div>
+//   );
+// };
+
+// export default ParkingLotPage;
+
+
+/////////////////////
+// import React, { useState } from 'react';
+// import { Link } from 'react-router-dom';
+// import "./styles/Registration.css";
+// import { getDocs, collection, where, query } from "firebase/firestore";
+// import { db2 } from "../FirebaseConfig/Firebase";
+
+// const ParkingLotPage = () => {
+//   const db2ref = collection(db2, "booking");
+//   const [name, setName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [vehicleNumber, setVehicleNumber] = useState("");
+//   const [phoneNumber, setPhoneNumber] = useState("");
+//   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+//   const [parkingName, setParkingName] = useState("ABC Parking Lot"); // Replace "ABC Parking Lot" with the actual parking name
+
+//   // Function to handle form submission
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     // Handle form submission here
+//   }
+
+//   // Array of time slots
+//   const timeSlots = [
+//     "00:00 - 01:00",
+//     "01:00 - 02:00",
+//     "02:00 - 03:00",
+//     "03:00 - 04:00",
+//     "04:00 - 05:00",
+//     "05:00 - 06:00",
+//     "06:00 - 07:00",
+//     "07:00 - 08:00",
+//     "08:00 - 09:00",
+//     "09:00 - 10:00",
+//     "10:00 - 11:00",
+//     "11:00 - 12:00",
+//     "12:00 - 13:00",
+//     "13:00 - 14:00",
+//     "14:00 - 15:00",
+//     "15:00 - 16:00",
+//     "16:00 - 17:00",
+//     "17:00 - 18:00",
+//     "18:00 - 19:00",
+//     "19:00 - 20:00",
+//     "20:00 - 21:00",
+//     "21:00 - 22:00",
+//     "22:00 - 23:00",
+//     "23:00 - 24:00"
+//     // Add more time slots as needed
+//   ];
+
+//   return (
+//     <div className="container">
+//       <div className="head">
+//         <h2>Booking</h2>
+//         <form onSubmit={handleSubmit}>
+//           <div className="inputs">
+//             <input type="text" placeholder="Name" onChange={(e) => setName(e.target.value)} value={name}></input>
+//           </div>
+//           <div className="inputs">
+//             <select onChange={(e) => setSelectedTimeSlot(e.target.value)} value={selectedTimeSlot}>
+//               <option value="" disabled>Select Time Slot</option>
+//               {timeSlots.map((slot, index) => (
+//                 <option key={index} value={slot}>{slot}</option>
+//               ))}
+//             </select>
+//           </div>
+//           <div className="inputs">
+//             <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password}></input>
+//           </div>
+//           <div className="inputs">
+//             <input type="text" placeholder="Vehicle Number" onChange={(e) => setVehicleNumber(e.target.value)} value={vehicleNumber}></input>
+//           </div>
+//           <div className="inputs">
+//             <input type="text" placeholder="Phone Number" onChange={(e) => setPhoneNumber(e.target.value)} value={phoneNumber}></input>
+//           </div>
+//           <button type="submit">Book Parking</button>
+//         </form>
+//         <div className="parking-info">
+//           <p>Parking Name: {parkingName}</p>
+//         </div>
+//         <div className="form-footer">
+//           <p>
+//             Already have an account? <Link to="/signin">Sign in</Link>
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ParkingLotPage;
+
+
+////////////////////////////
+// import React, { useState } from 'react';
+// import { Link } from 'react-router-dom';
+// import "./styles/Registration.css";
+// import { collection, addDoc } from "firebase/firestore";
+// import { db2 } from "../FirebaseConfig/Firebase";
+
+// const ParkingLotPage = () => {
+
+//   const [name, setName] = useState("");
+//   // const [password, setPassword] = useState("");
+//   const [vehicleNumber, setVehicleNumber] = useState("");
+//   const [phoneNumber, setPhoneNumber] = useState("");
+//   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+//   const db2ref = collection(db2, "booking");
+//   const [parkingName, setParkingName] = useState("ABC Parking Lot"); // Replace "ABC Parking Lot" with the actual parking name
+
+//   // Function to handle form submission
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const docRef = await addDoc(db2ref, {
+//         name: name,
+//         timeSlot: selectedTimeSlot,
+//         vehicleNumber: vehicleNumber,
+//         phoneNumber: phoneNumber,
+//         parkingName: parkingName
+//       });
+//       console.log("Document written with ID: ", docRef.id);
+//       // Clear form fields after submission
+//       setName("");
+//       // setPassword("");
+//       setVehicleNumber("");
+//       setPhoneNumber("");
+//       setSelectedTimeSlot("");
+//     } catch (error) {
+//       console.error("Error adding document: ", error);
+//     }
+//   }
+
+//   // Array of time slots
+//   const timeSlots = [
+//         "00:00 - 01:00",
+//         "01:00 - 02:00",
+//         "02:00 - 03:00",
+//         "03:00 - 04:00",
+//         "04:00 - 05:00",
+//         "05:00 - 06:00",
+//         "06:00 - 07:00",
+//         "07:00 - 08:00",
+//         "08:00 - 09:00",
+//         "09:00 - 10:00",
+//         "10:00 - 11:00",
+//         "11:00 - 12:00",
+//         "12:00 - 13:00",
+//         "13:00 - 14:00",
+//         "14:00 - 15:00",
+//         "15:00 - 16:00",
+//         "16:00 - 17:00",
+//         "17:00 - 18:00",
+//         "18:00 - 19:00",
+//         "19:00 - 20:00",
+//         "20:00 - 21:00",
+//         "21:00 - 22:00",
+//         "22:00 - 23:00",
+//         "23:00 - 24:00"
+//   ];
+
+//   return (
+//     <div className="container">
+//       <div className="head">
+//         <h2>Booking</h2>
+//         <form onSubmit={handleSubmit}>
+//           <div className="inputs">
+//             <input type="text" placeholder="Name" onChange={(e) => setName(e.target.value)} value={name}></input>
+//           </div>
+//           <div className="inputs">
+//             <select onChange={(e) => setSelectedTimeSlot(e.target.value)} value={selectedTimeSlot}>
+//               <option value="" disabled>Select Time Slot</option>
+//               {timeSlots.map((slot, index) => (
+//                 <option key={index} value={slot}>{slot}</option>
+//               ))}
+//             </select>
+//           </div>
+//           {/* <div className="inputs">
+//             <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password}></input>
+//           </div> */}
+//           <div className="inputs">
+//             <input type="text" placeholder="Vehicle Number" onChange={(e) => setVehicleNumber(e.target.value)} value={vehicleNumber}></input>
+//           </div>
+//           <div className="inputs">
+//             <input type="text" placeholder="Phone Number" onChange={(e) => setPhoneNumber(e.target.value)} value={phoneNumber}></input>
+//           </div>
+//           <button type="submit">Book Parking</button>
+//         </form>
+//         <div className="parking-info">
+//           <p>Parking Name: {parkingName}</p>
+//         </div>
+//         <div className="form-footer">
+//           <p>
+//             Already have an account? <Link to="/signin">Sign in</Link>
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ParkingLotPage;
+
+
+//////////////////////////////////////////////////////end ///////////////////////////////////////////////////////////

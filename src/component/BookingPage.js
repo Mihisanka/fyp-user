@@ -1,68 +1,5 @@
-// import React, { useEffect } from "react";
-// import L from "leaflet";
-// import "leaflet/dist/leaflet.css"; // Import Leaflet CSS
-
-// const Booking = () => {
-//   useEffect(() => {
-//     // Initialize Leaflet map only if it's not already initialized
-//     const mapContainer = document.getElementById("map");
-//     if (!mapContainer?._leaflet_id) {
-//       const map = L.map(mapContainer).setView([7.8731, 80.7718], 7);
-
-//       // Add a tile layer (OpenStreetMap)
-//       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-//         attribution: "© OpenStreetMap contributors",
-//       }).addTo(map);
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     // Resize the map when the window size changes
-//     const resizeMap = () => {
-//       const map = document.getElementById("map");
-//       if (map) {
-//         const aboutSection = map.parentElement;
-//         const height = aboutSection.offsetHeight;
-//         const width = aboutSection.offsetWidth;
-//         map.style.height = height + "px";
-//         map.style.width = width + "px";
-
-//         const leafletMap = map._leaflet_map;
-//         if (leafletMap) {
-//           leafletMap.invalidateSize();
-//         }
-//       }
-//     };
-
-//     window.addEventListener("resize", resizeMap);
-//     resizeMap(); // Call initially
-//     return () => window.removeEventListener("resize", resizeMap); // Cleanup
-//   }, []);
-
-//   useEffect(() => {
-//     const map = document.getElementById("map");
-//     if (map) {
-//       const leafletMap = map._leaflet_map;
-//       if (leafletMap) {
-//         leafletMap.getCanvas().toBlob((blob) => {
-//           const img = document.createElement("img");
-//           img.src = URL.createObjectURL(blob);
-//           map.appendChild(img);
-//         });
-//       }
-//     }
-//   }, []);
-
-//   return (
-//     <div className="test">
-//       <div id="map" style={{ width: "100%", height: "1090px" }}></div>
-//     </div>
-//   );
-// };
-
-// export default Booking;
-
 // import React, { useState, useEffect } from "react";
+// import { Link, useParams, useNavigate } from "react-router-dom";
 // import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 // import L from "leaflet";
 // import "leaflet/dist/leaflet.css";
@@ -76,6 +13,13 @@
 // } from "mdb-react-ui-kit";
 
 // const Booking = () => {
+//   const { user, email } = useParams(); // Extracting both user and email parameters
+//   const decodedUser = user
+//     ? decodeURIComponent(user.replace(/\+/g, " "))
+//     : null; // Replace '+' with space
+//   const decodedEmail = email ? decodeURIComponent(email) : ""; // Ensure decodedEmail is not undefined
+//   const navigate = useNavigate();
+
 //   const [carparkData, setCarparkData] = useState([]);
 //   const [error, setError] = useState(null);
 //   const [filter, setFilter] = useState("all");
@@ -83,6 +27,9 @@
 //   const [selectedCarpark, setSelectedCarpark] = useState(null);
 
 //   useEffect(() => {
+//     console.log("User:", decodedUser);
+//     console.log("Email:", decodedEmail);
+
 //     const fetchData = () => {
 //       const carparkRef = ref(db1);
 //       const listener = onValue(
@@ -121,10 +68,10 @@
 //     fetchData();
 //   }, []);
 
-//   const handleFilterChange = (event) => {
+//   function handleFilterChange(event) {
 //     setFilter(event.target.value);
 //     setShowModal(false);
-//   };
+//   }
 
 //   const filterData = () => {
 //     return filter === "all"
@@ -149,30 +96,45 @@
 //   const handleBookClick = (marker) => {
 //     setSelectedCarpark(marker);
 //     setShowModal(true);
+//     navigate(
+//       `/park-lot?user=${encodeURIComponent(
+//         JSON.stringify(marker)
+//       )}&email=${encodeURIComponent(decodedEmail)}`
+//     );
 //   };
 
-//   const handleBookCarpark = (id, marker, e) => {
+//   const handleBookCarpark = (id, selectedCarparkData, e) => {
 //     e.stopPropagation();
 
-//     if (!marker || !marker.uuid) {
-//       console.error("Invalid selected carpark");
-//       return;
+//     console.log("Selected Carpark Data:", selectedCarparkData);
+
+//     if (selectedCarparkData && selectedCarparkData.bookedHours) {
+//       const updatedCarparkData = {
+//         bookings: selectedCarparkData.bookedHours,
+//       };
+
+//       const carparkRef = ref(db1, id);
+//       set(carparkRef, updatedCarparkData)
+//         .then(() => {
+//           console.log("Document successfully updated!");
+//           setCarparkData((prevData) =>
+//             prevData.map((carpark) =>
+//               carpark.id === selectedCarparkData.id
+//                 ? { ...carpark, ...updatedCarparkData }
+//                 : carpark
+//             )
+//           );
+//           setSelectedCarpark(null);
+//           setShowModal(false);
+//         })
+//         .catch((error) => {
+//           console.error("Error updating document:", error);
+//           setError("Error updating document");
+//         });
+//     } else {
+//       console.error("Invalid selected carpark or booked hours");
+//       setError("Invalid selected carpark or booked hours");
 //     }
-
-//     // Convert marker.uuid to string explicitly
-//     const carparkRef = ref(db1, String(marker.uuid));
-//     const updatedBookings = (marker.booking || 0) + 1;
-
-//     set(carparkRef, { bookings: updatedBookings })
-//       .then(() => {
-//         console.log("Document successfully updated!");
-//         setSelectedCarpark(null);
-//         setShowModal(false);
-//       })
-//       .catch((error) => {
-//         console.error("Error updating document:", error);
-//         setError("Error updating document: " + error.message);
-//       });
 //   };
 
 //   return (
@@ -192,7 +154,7 @@
 //           <option value="unavailable">Unavailable</option>
 //         </select>
 //       </div>
-//       <MDBModal show={showModal} onHide={toggleModal}>
+//       <MDBModal show={showModal.toString()} onHide={() => setShowModal(false)}>
 //         <MDBModalHeader>Book Carpark</MDBModalHeader>
 //         <MDBModalBody>
 //           {selectedCarpark && (
@@ -201,11 +163,11 @@
 //               <p>Enter number of hours:</p>
 //               <input
 //                 type="number"
-//                 value={selectedCarpark.bookings || ""}
+//                 value={selectedCarpark.bookedHours || ""}
 //                 onChange={(e) =>
 //                   setSelectedCarpark({
 //                     ...selectedCarpark,
-//                     bookings: parseInt(e.target.value, 10),
+//                     bookedHours: parseInt(e.target.value, 10),
 //                   })
 //                 }
 //               />
@@ -218,8 +180,8 @@
 //           </MDBBtn>
 //           <MDBBtn
 //             color="primary"
-//             onClick={(e) =>
-//               handleBookCarpark(selectedCarpark.id, selectedCarpark, e)
+//             onClick={() =>
+//               handleBookCarpark(selectedCarpark.id, selectedCarpark)
 //             }
 //           >
 //             Book
@@ -263,7 +225,6 @@
 //                   <p>Price : Rs.{marker.price}.00</p>
 //                   <p>Latitude: {marker.latitude}</p>
 //                   <p>Longitude: {marker.longitude}</p>
-//                   <p>Bookings :{marker.bookings || 0}</p>
 //                   <button onClick={() => handleBookClick(marker)}>Book</button>
 //                 </div>
 //               </Popup>
@@ -278,6 +239,7 @@
 // export default Booking;
 
 import React, { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -291,10 +253,17 @@ import {
 } from "mdb-react-ui-kit";
 
 const Booking = () => {
+  const { user, email } = useParams(); // Extracting both user and email parameters
+  const decodedUser = user
+    ? decodeURIComponent(user.replace(/\+/g, " "))
+    : null; // Replace '+' with space
+  const decodedEmail = email ? decodeURIComponent(email) : "";
+  const navigate = useNavigate();
+
   const [carparkData, setCarparkData] = useState([]);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
-  const [showModal, setShowModal] = useState(false); // Changed default value to false
+  const [showModal, setShowModal] = useState(false);
   const [selectedCarpark, setSelectedCarpark] = useState(null);
 
   useEffect(() => {
@@ -321,25 +290,25 @@ const Booking = () => {
           }
         },
         (error) => {
-          setError(error.message); // Handle Firebase-related errors
+          setError(error.message);
         }
       );
 
       const interval = setInterval(fetchData, 5000);
 
       return () => {
-        off(carparkRef, "value", listener); // Remove the listener
+        off(carparkRef, "value", listener);
         clearInterval(interval);
       };
     };
 
     fetchData();
-  }, []);
+  }, [email]); // Include decodedEmail in the dependency array
 
-  const handleFilterChange = (event) => {
+  function handleFilterChange(event) {
     setFilter(event.target.value);
-    setShowModal(false); // Close modal when filter changes
-  };
+    setShowModal(false);
+  }
 
   const filterData = () => {
     return filter === "all"
@@ -364,31 +333,34 @@ const Booking = () => {
   const handleBookClick = (marker) => {
     setSelectedCarpark(marker);
     setShowModal(true);
+    navigate(
+      `/park-lot?user=${encodeURIComponent(
+        JSON.stringify(marker)
+      )}&email=${encodeURIComponent(email)}`
+    );
   };
 
-  const handleBookCarpark = (id, e) => {
+  const handleBookCarpark = (id, selectedCarparkData, e) => {
     e.stopPropagation();
 
-    console.log("Selected Carpark:", selectedCarpark);
+    console.log("Selected Carpark Data:", selectedCarparkData);
 
-    if (selectedCarpark && selectedCarpark.bookedHours) {
+    if (selectedCarparkData && selectedCarparkData.bookedHours) {
       const updatedCarparkData = {
-        bookings: selectedCarpark.bookedHours, // Update with the count of bookings
+        bookings: selectedCarparkData.bookedHours,
       };
 
       const carparkRef = ref(db1, id);
       set(carparkRef, updatedCarparkData)
         .then(() => {
           console.log("Document successfully updated!");
-          // Update carparkData state
           setCarparkData((prevData) =>
             prevData.map((carpark) =>
-              carpark.id === selectedCarpark.id
+              carpark.id === selectedCarparkData.id
                 ? { ...carpark, ...updatedCarparkData }
                 : carpark
             )
           );
-          // Clear selected carpark and close modal
           setSelectedCarpark(null);
           setShowModal(false);
         })
@@ -419,7 +391,7 @@ const Booking = () => {
           <option value="unavailable">Unavailable</option>
         </select>
       </div>
-      <MDBModal show={showModal} onHide={toggleModal}>
+      <MDBModal show={showModal.toString()} onHide={() => setShowModal(false)}>
         <MDBModalHeader>Book Carpark</MDBModalHeader>
         <MDBModalBody>
           {selectedCarpark && (
@@ -445,7 +417,9 @@ const Booking = () => {
           </MDBBtn>
           <MDBBtn
             color="primary"
-            onClick={() => handleBookCarpark(selectedCarpark.id)}
+            onClick={() =>
+              handleBookCarpark(selectedCarpark.id, selectedCarpark)
+            }
           >
             Book
           </MDBBtn>
@@ -469,7 +443,7 @@ const Booking = () => {
               position={[
                 parseFloat(marker.latitude),
                 parseFloat(marker.longitude),
-              ]} // Parse coordinates as floats
+              ]}
               icon={customIcon(marker.availability)}
             >
               <Popup>

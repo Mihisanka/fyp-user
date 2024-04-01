@@ -1,5 +1,9 @@
 /* HomePage.css */
 
+.container-home{
+  padding-top: 10%;
+}
+
 .homepage {
   display: flex;
   flex-direction: column;
@@ -33,21 +37,22 @@
   font-size: 16px;
   font-style: italic;
   /*margin-bottom: 10px;*/
+  hb {
+    background-color: rgba(11,12,40,255);
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    color: rgb(4, 214, 175);
+  }
+  
+  .hb:hover {
+    background-color: rgba(24,27,58,255); /* Light blue color on hover */
+  }
+  
 }
 
-.book-button {
-  background-color: rgba(11,12,40,255);
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  text-decoration: none;
-  color: rgb(4, 214, 175);
-}
-
-.book-button:hover {
-  background-color: rgba(24,27,58,255); /* Light blue color on hover */
-}
 
 @media(max-width:736px){
   .contact-form .main{

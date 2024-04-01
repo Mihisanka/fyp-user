@@ -1,0 +1,550 @@
+
+///////////////////////////////////////bookings//////////////////////////////////////////////////////////////////////////////////////////////
+
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { ref, onValue, off, db1, set } from "../FirebaseConfig/Firebase.js";
+import {MDBModal,MDBModalBody,MDBModalHeader,MDBModalFooter,MDBBtn,} from "mdb-react-ui-kit";
+
+const Booking = () => {
+  const [carparkData, setCarparkData] = useState([]);
+  const [error, setError] = useState(null);
+  const [filter, setFilter] = useState("all");
+  const [showModal, setShowModal] = useState(false); // Changed default value to false
+  const [selectedCarpark, setSelectedCarpark] = useState(null);
+
+  useEffect(() => {
+    const fetchData = () => {
+      const carparkRef = ref(db1);
+      const listener = onValue(
+        carparkRef,
+        (snapshot) => {
+          try {
+            if (snapshot && snapshot.exists()) {
+              const data = snapshot.val();
+              const carparkArray = Object.keys(data).map((key) => ({
+                id: key,
+                ...data[key],
+              }));
+              setCarparkData(carparkArray);
+              setError(null);
+            } else {
+              setCarparkData([]);
+              setError("No data available");
+            }
+          } catch (error) {
+            setError(error.message);
+          }
+        },
+        (error) => {
+          setError(error.message); // Handle Firebase-related errors
+        }
+      );
+
+      const interval = setInterval(fetchData, 5000);
+
+      return () => {
+        off(carparkRef, "value", listener); // Remove the listener
+        clearInterval(interval);
+      };
+    };
+
+    fetchData();
+  }, []);
+
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+    setShowModal(false); // Close modal when filter changes
+  };
+
+  const filterData = () => {
+    return filter === "all"
+      ? carparkData
+      : carparkData.filter((marker) => marker.availability === filter);
+  };
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
+  const customIcon = (availability) => {
+    const fillColor = availability === "unavailable" ? "red" : "green";
+    return L.divIcon({
+      className: "custom-div-icon",
+      html: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="${fillColor}" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+              <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+            </svg>`,
+    });
+  };
+
+  const handleBookClick = (marker) => {
+    setSelectedCarpark(marker);
+    setShowModal(true);
+  };
+
+  const handleBookCarpark = (id, e) => {
+    e.stopPropagation();
+
+    console.log("Selected Carpark:", selectedCarpark);
+
+    if (selectedCarpark && selectedCarpark.bookedHours) {
+      const updatedCarparkData = {
+        bookings: selectedCarpark.bookedHours, // Update with the count of bookings
+      };
+
+      const carparkRef = ref(db1, id);
+      set(carparkRef, updatedCarparkData)
+        .then(() => {
+          console.log("Document successfully updated!");
+          // Update carparkData state
+          setCarparkData((prevData) =>
+            prevData.map((carpark) =>
+              carpark.id === selectedCarpark.id
+                ? { ...carpark, ...updatedCarparkData }
+                : carpark
+            )
+          );
+          // Clear selected carpark and close modal
+          setSelectedCarpark(null);
+          setShowModal(false);
+        })
+        .catch((error) => {
+          console.error("Error updating document:", error);
+          setError("Error updating document");
+        });
+    } else {
+      console.error("Invalid selected carpark or booked hours");
+      setError("Invalid selected carpark or booked hours");
+    }
+  };
+
+  return (
+    <div id="map" style={{ width: "100%", height: "1090px" }}>
+      <div className="filter form-group">
+        <label htmlFor="filter" className="label">
+          Filter by Availability :
+        </label>
+        <select
+          id="filter"
+          className="form-control"
+          value={filter}
+          onChange={handleFilterChange}
+        >
+          <option value="all">All</option>
+          <option value="available">Available</option>
+          <option value="unavailable">Unavailable</option>
+        </select>
+      </div>
+      <MDBModal show={showModal} onHide={toggleModal}>
+        <MDBModalHeader>Book Carpark</MDBModalHeader>
+        <MDBModalBody>
+          {selectedCarpark && (
+            <>
+              <h2>{selectedCarpark.carparkName}</h2>
+              <p>Enter number of hours:</p>
+              <input
+                type="number"
+                value={selectedCarpark.bookedHours || ""}
+                onChange={(e) =>
+                  setSelectedCarpark({
+                    ...selectedCarpark,
+                    bookedHours: parseInt(e.target.value, 10),
+                  })
+                }
+              />
+            </>
+          )}
+        </MDBModalBody>
+        <MDBModalFooter>
+          <MDBBtn color="secondary" onClick={toggleModal}>
+            Close
+          </MDBBtn>
+          <MDBBtn
+            color="primary"
+            onClick={() => handleBookCarpark(selectedCarpark.id)}
+          >
+            Book
+          </MDBBtn>
+        </MDBModalFooter>
+      </MDBModal>
+      {carparkData.length === 0 ? (
+        <p>Loading...</p>
+      ) : (
+        <MapContainer
+          center={[7.8731, 80.7718]}
+          zoom={8}
+          style={{ width: "100%", height: "800px" }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+          {filterData().map((marker) => (
+            <Marker
+              key={marker.id}
+              position={[
+                parseFloat(marker.latitude),
+                parseFloat(marker.longitude),
+              ]} // Parse coordinates as floats
+              icon={customIcon(marker.availability)}
+            >
+              <Popup>
+                <div>
+                  <h2>{marker.carparkName}</h2>
+                  <p
+                    style={{
+                      color:
+                        marker.availability === "available" ? "green" : "red",
+                    }}
+                  >
+                    Availability :{" "}
+                    {marker.availability.charAt(0).toUpperCase() +
+                      marker.availability.slice(1)}
+                  </p>
+                  <p>Price : Rs.{marker.price}.00</p>
+                  <p>Latitude: {marker.latitude}</p>
+                  <p>Longitude: {marker.longitude}</p>
+                  <Link to="/park-lot">
+                  <button onClick={() => handleBookClick(marker)}>Book</button>
+                  </Link>  
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      )}
+    </div>
+  );
+};
+
+export default Booking;
+
+
+///////////////////////////////////////////////////////////////end ////////////////////////////////////////////////////
+
+
+
+
+////////////////////////////////////////////parking lot start  28/03////////////////////////////////////////////////////////////////////////////
+
+// import React, { useState, useEffect } from "react";
+// import { db2 } from "../FirebaseConfig/Firebase";
+// import "./styles/Registration.css";
+// import { Link, useLocation } from "react-router-dom";
+// import { getDocs, addDoc, collection, where, query } from "firebase/firestore";
+
+// const ParkLot = ({ selectedData }) => {
+//   const [name, setName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [vehicleNumber, setVehicleNumber] = useState("");
+//   const [phoneNumber, setPhoneNumber] = useState("");
+//   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+//   const [parkingSlotName, setParkingSlotName] = useState(""); // State for parking slot name
+//   const db2ref = collection(db2, "booking");
+//   const [metch, setMetch] = useState([]);
+
+//   // Get the email from query parameters
+//   const { search } = useLocation();
+//   const queryParams = new URLSearchParams(search);
+//   const emailFromLogin = queryParams.get("email");
+
+//   useEffect(() => {
+//     // Fetch time slots from Firestore when the component mounts
+//     getTimeSlots();
+//     // Set initial state values based on selected data
+//     if (selectedData) {
+//       setName(selectedData.name || "");
+//       setEmail(selectedData.email || "");
+//       setVehicleNumber(selectedData.vehicleNumber || "");
+//       setPhoneNumber(selectedData.phoneNumber || "");
+//       setParkingSlotName(selectedData.parkingSlotName || ""); // Set parking slot name from selected data
+//     }
+//   }, [selectedData]);
+
+//   const getTimeSlots = async () => {
+//     const timeSlotsRef = collection(db2, "timeSlots");
+//     try {
+//       const snapshot = await getDocs(timeSlotsRef);
+//       const slots = snapshot.docs.map((doc) => doc.data());
+//       console.log("Time Slots:", slots);
+//     } catch (error) {
+//       console.error("Error fetching time slots:", error);
+//     }
+//   };
+
+//   const registration = async () => {
+//     const matchEmail = query(db2ref, where("Email", "==", email));
+//     try {
+//       const snapshot = await getDocs(matchEmail);
+//       const emailMatchingArray = snapshot.docs.map((doc) => doc.data());
+//       if (emailMatchingArray.length > 0) {
+//         alert(`Booking unsuccessful `);
+//       } else {
+//         await addDoc(db2ref, {
+//           Name: name,
+//           Email: email,
+//           Password: password,
+//           VehicleNumber: vehicleNumber,
+//           PhoneNumber: phoneNumber,
+//           TimeSlot: selectedTimeSlot,
+//           ParkingSlotName: parkingSlotName, // Include parking slot name in the document
+//         });
+//         alert("Booking successful");
+//       }
+//     } catch (error) {
+//       alert(error.message);
+//     }
+//   };
+
+//   // Set the email value if passed from Login component
+//   if (emailFromLogin) {
+//     setEmail(emailFromLogin);
+//   }
+
+//   // Array of time slots in 24-hour format
+//   const timeSlots = [
+//     "00:00 - 01:00",
+//     "01:00 - 02:00",
+//     "02:00 - 03:00",
+//     "03:00 - 04:00",
+//     "04:00 - 05:00",
+//     "05:00 - 06:00",
+//     "06:00 - 07:00",
+//     "07:00 - 08:00",
+//     "08:00 - 09:00",
+//     "09:00 - 10:00",
+//     "10:00 - 11:00",
+//     "11:00 - 12:00",
+//     "12:00 - 13:00",
+//     "13:00 - 14:00",
+//     "14:00 - 15:00",
+//     "15:00 - 16:00",
+//     "16:00 - 17:00",
+//     "17:00 - 18:00",
+//     "18:00 - 19:00",
+//     "19:00 - 20:00",
+//     "20:00 - 21:00",
+//     "21:00 - 22:00",
+//     "22:00 - 23:00",
+//     "23:00 - 24:00",
+//   ];
+
+//   return (
+//     <div className="container">
+//       <div className="head">
+//         <h2>Booking</h2>
+//         <div className="inputs">
+//           <input
+//             type="text"
+//             placeholder="Name"
+//             onChange={(e) => setName(e.target.value)}
+//             value={name}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <input
+//             type="email"
+//             placeholder="Email"
+//             onChange={(e) => setEmail(e.target.value)}
+//             value={email} // Bind email value to the input field
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <input
+//             type="password"
+//             placeholder="Password"
+//             onChange={(e) => setPassword(e.target.value)}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <input
+//             type="text"
+//             placeholder="Vehicle Number"
+//             onChange={(e) => setVehicleNumber(e.target.value)}
+//             value={vehicleNumber}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <input
+//             type="text"
+//             placeholder="Phone Number"
+//             onChange={(e) => setPhoneNumber(e.target.value)}
+//             value={phoneNumber}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <input
+//             type="text"
+//             placeholder="Parking Slot Name" // Add parking slot name field
+//             onChange={(e) => setParkingSlotName(e.target.value)}
+//             value={parkingSlotName}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <select
+//             onChange={(e) => setSelectedTimeSlot(e.target.value)}
+//             value={selectedTimeSlot}
+//           >
+//             <option value="" disabled>
+//               Select Time Slot
+//             </option>
+//             {timeSlots.map((slot, index) => (
+//               <option key={index} value={slot}>
+//                 {slot}
+//               </option>
+//             ))}
+//           </select>
+//         </div>
+//         <button onClick={registration}>Book Parking</button>
+//         <div class="form-footer">
+//           <p>
+//             <Link to="/booking">Booking</Link>{" "}
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ParkLot;
+
+
+// import React, { useState, useEffect } from "react";
+// import { db2 } from "../FirebaseConfig/Firebase";
+// import "./styles/Registration.css";
+// import { Link, useLocation } from "react-router-dom";
+// import { addDoc, collection } from "firebase/firestore";
+
+// const ParkLot = ({ selectedData }) => {
+//   const [name, setName] = useState("");
+//   const [vehicleNumber, setVehicleNumber] = useState("");
+//   const [parkingSlotName, setParkingSlotName] = useState("");
+//   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+//   const db2ref = collection(db2, "booking");
+//   const [successMessage, setSuccessMessage] = useState("");
+//   const [errorMessage, setErrorMessage] = useState("");
+
+//   // Get the email from query parameters
+//   const { search } = useLocation();
+//   const queryParams = new URLSearchParams(search);
+//   const emailFromLogin = queryParams.get("email");
+
+//   useEffect(() => {
+//     // Set initial state values based on selected data
+//     if (selectedData) {
+//       setName(selectedData.name || "");
+//       setVehicleNumber(selectedData.vehicleNumber || "");
+//       setParkingSlotName(selectedData.parkingSlotName || "");
+//     }
+//   }, [selectedData]);
+
+//   const registration = async () => {
+//     try {
+//       await addDoc(db2ref, {
+//         Name: name,
+//         VehicleNumber: vehicleNumber,
+//         ParkingSlotName: parkingSlotName,
+//         TimeSlot: selectedTimeSlot,
+//       });
+//       setSuccessMessage("Booking successful");
+//     } catch (error) {
+//       setErrorMessage(error.message);
+//     }
+//   };
+
+//   // Set the email value if passed from Login component
+//   // if (emailFromLogin) {
+//   //   setEmail(emailFromLogin);
+//   // }
+
+//   // Array of time slots in 24-hour format
+//   const timeSlots = [
+//     "00:00 - 01:00",
+//     "01:00 - 02:00",
+//     "02:00 - 03:00",
+//     "03:00 - 04:00",
+//     "04:00 - 05:00",
+//     "05:00 - 06:00",
+//     "06:00 - 07:00",
+//     "07:00 - 08:00",
+//     "08:00 - 09:00",
+//     "09:00 - 10:00",
+//     "10:00 - 11:00",
+//     "11:00 - 12:00",
+//     "12:00 - 13:00",
+//     "13:00 - 14:00",
+//     "14:00 - 15:00",
+//     "15:00 - 16:00",
+//     "16:00 - 17:00",
+//     "17:00 - 18:00",
+//     "18:00 - 19:00",
+//     "19:00 - 20:00",
+//     "20:00 - 21:00",
+//     "21:00 - 22:00",
+//     "22:00 - 23:00",
+//     "23:00 - 24:00",
+//   ];
+
+//   return (
+//     <div className="container">
+//       <div className="head">
+//         <h2>Booking</h2>
+//         <div className="inputs">
+//           <input
+//             type="text"
+//             placeholder="Name"
+//             onChange={(e) => setName(e.target.value)}
+//             value={name}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <input
+//             type="text"
+//             placeholder="Vehicle Number"
+//             onChange={(e) => setVehicleNumber(e.target.value)}
+//             value={vehicleNumber}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <input
+//             type="text"
+//             placeholder="Parking Slot Name"
+//             onChange={(e) => setParkingSlotName(e.target.value)}
+//             value={parkingSlotName}
+//           ></input>
+//         </div>
+//         <div className="inputs">
+//           <select
+//             onChange={(e) => setSelectedTimeSlot(e.target.value)}
+//             value={selectedTimeSlot}
+//           >
+//             <option value="" disabled>
+//               Select Time Slot
+//             </option>
+//             {timeSlots.map((slot, index) => (
+//               <option key={index} value={slot}>
+//                 {slot}
+//               </option>
+//             ))}
+//           </select>
+//         </div>
+//         <button onClick={registration}>Book Parking</button>
+//         {successMessage && <p>{successMessage}</p>}
+//         {errorMessage && <p>{errorMessage}</p>}
+//         <div className="form-footer">
+//           <p>
+//             <Link to="/booking">Booking</Link>{" "}
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ParkLot;
+
+/////////////////////////////////////////////////////////////////parking lot end ////////////////////////////////////////////////////////////////////////////
