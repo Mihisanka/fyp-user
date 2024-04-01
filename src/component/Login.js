@@ -9,6 +9,10 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
   const login = async (e) => {
     e.preventDefault(); // Prevent the default form submission
 
@@ -49,13 +53,15 @@ const Login = () => {
             <input
               type="text"
               placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              onChange={handleEmailChange}
             ></input>
           </div>
           <div className="inputs">
             <input
               type="password"
               placeholder="Password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             ></input>
           </div>
