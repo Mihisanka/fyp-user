@@ -136,6 +136,7 @@ const Booking = () => {
 
   return (
     <div id="map" style={{ width: "100%", height: "1090px" }}>
+    
       <div className="filter form-group">
         <label htmlFor="filter" className="label">
           Filter by Availability :

@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  setDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { db2 } from "../FirebaseConfig/Firebase";
 import "./styles/Registration.css";
+import { serverTimestamp } from "firebase/firestore";
 
 const ParkLot = () => {
   const [name, setName] = useState("");
@@ -11,98 +19,103 @@ const ParkLot = () => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
   const [email, setEmail] = useState("");
   const [marker, setMarker] = useState(null);
+  const [vehicleNumberFetched, setVehicleNumberFetched] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    const markerData = location.state ? location.state.selectedMarkerData : null;
-    if (markerData) {
-      setMarker(markerData);
-      setParkingSlotName(markerData.address); // Assuming 'address' maps to parkingSlotName
-      setEmail(markerData.decodedUser); // Set the email here
-    }
+    const fetchData = async () => {
+      try {
+        const markerData = location.state
+          ? location.state.selectedMarkerData
+          : null;
+        if (markerData) {
+          console.log("Marker Data:", markerData);
+          setMarker(markerData);
+          setParkingSlotName(markerData.carparkName);
+          setEmail(markerData.decodedUser);
+
+          // Fetch vehicle number and name
+          await fetchVehicleData(markerData.decodedUser);
+          await fetchName(markerData.decodedUser);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, [location]);
 
-  useEffect(() => {
-    const markerData = location.state ? location.state.selectedMarkerData : null;
-    if (markerData && markerData.decodedUser) {
-      fetchNameFromEmail(markerData.decodedUser);
-    }
-  }, [location]);
-
-  useEffect(() => {
-    console.log("Marker Data:", marker); // Console log marker data
-  }, [marker]); // Add marker as a dependency to this useEffect
-
-  const fetchNameFromEmail = async (email) => {
-    const userRef = collection(db2, "Auth");
-    const userQuery = query(userRef, where("Email", "==", email));
+  const fetchName = async (email) => {
     try {
+      const userQuery = query(
+        collection(db2, "Auth"),
+        where("Email", "==", email)
+      );
       const userSnapshot = await getDocs(userQuery);
       if (!userSnapshot.empty) {
-        userSnapshot.forEach(async (doc) => {
+        userSnapshot.forEach((doc) => {
           const userData = doc.data();
-          const searchedName = userData.Name || "";
-          setName(searchedName);
-
-          // Now, query the database to find the user by their name
-          const userByNameQuery = query(
-            userRef,
-            where("Name", "==", searchedName)
-          );
-          const userByNameSnapshot = await getDocs(userByNameQuery);
-          if (!userByNameSnapshot.empty) {
-            userByNameSnapshot.forEach((doc) => {
-              const userDataByName = doc.data();
-              const vehicleNumber = userDataByName.Vehiclenumber || "";
-              setVehicleNumber(vehicleNumber); // Update vehicle number state
-              setMarker((prevMarker) => ({
-                ...prevMarker,
-                searchedName: searchedName,
-                vehicleNumber: vehicleNumber,
-              }));
-            });
-          }
+          const name = userData.Name || "";
+          setName(name);
         });
       }
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error("Error fetching name:", error);
+    }
+  };
+
+  const fetchVehicleData = async (email) => {
+    try {
+      const userQuery = query(
+        collection(db2, "Auth"),
+        where("Email", "==", email)
+      );
+      const userSnapshot = await getDocs(userQuery);
+      if (!userSnapshot.empty) {
+        userSnapshot.forEach((doc) => {
+          const userData = doc.data();
+          const vehicleNumber = userData.Vehiclenumber || "";
+          setVehicleNumber(vehicleNumber);
+          setVehicleNumberFetched(true); // Set vehicle number fetched flag
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching vehicle number:", error);
     }
   };
 
   const registration = async () => {
     try {
-      if (!name || !vehicleNumber || !parkingSlotName || !selectedTimeSlot) {
+      if (!vehicleNumberFetched) {
         alert("Please fill in all required fields");
         return;
       }
 
-      const db2ref = collection(db2, "booking");
-      await addDoc(db2ref, {
+      console.log("Values to be saved:", {
         Name: name,
         VehicleNumber: vehicleNumber,
         ParkingSlotName: parkingSlotName,
         TimeSlot: selectedTimeSlot,
         Email: email,
+        BookingDate: serverTimestamp(),
       });
 
-      generateReceipt(); // Call the function to generate the receipt
+      const bookingRef = doc(collection(db2, "booking"));
+      await setDoc(bookingRef, {
+        Name: name,
+        VehicleNumber: vehicleNumber,
+        ParkingSlotName: parkingSlotName,
+        TimeSlot: selectedTimeSlot,
+        Email: email,
+        BookingDate: serverTimestamp(), // Save current date as server timestamp
+      });
 
       alert("Booking successful");
     } catch (error) {
       console.error("Error adding document: ", error);
       alert("Error occurred while booking. Please try again later.");
     }
-  };
-
-  const generateReceipt = () => {
-    // Function to generate the receipt using all the data
-    console.log("Receipt:");
-    console.log("Name:", name);
-    console.log("Vehicle Number:", vehicleNumber);
-    console.log("Parking Slot Name:", parkingSlotName);
-    console.log("Selected Time Slot:", selectedTimeSlot);
-    console.log("Email:", email);
-    // You can format and display the receipt as needed
   };
 
   const timeSlots = [
@@ -121,8 +134,8 @@ const ParkLot = () => {
             type="text"
             placeholder="Name"
             onChange={(e) => setName(e.target.value)}
-            value={name || (marker ? marker.decodedUser : "")}
-          ></input>
+            value={name}
+          />
         </div>
         <div className="inputs">
           <label className="label-primary">Vehicle Number</label>
@@ -131,7 +144,7 @@ const ParkLot = () => {
             placeholder="Vehicle Number"
             onChange={(e) => setVehicleNumber(e.target.value)}
             value={vehicleNumber}
-          ></input>
+          />
         </div>
         <div className="inputs">
           <label className="label-primary">Parking Slot Name</label>
@@ -139,8 +152,8 @@ const ParkLot = () => {
             type="text"
             placeholder="Parking Slot Name"
             onChange={(e) => setParkingSlotName(e.target.value)}
-            value={parkingSlotName || (marker ? marker.address : "")}
-          ></input>
+            value={parkingSlotName}
+          />
         </div>
         <div className="inputs">
           <label className="label-primary">Please Select a time</label>
