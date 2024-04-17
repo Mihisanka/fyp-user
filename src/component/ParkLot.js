@@ -99,6 +99,7 @@ const ParkLot = () => {
         TimeSlot: selectedTimeSlot,
         Email: email,
         BookingDate: serverTimestamp(),
+        Status: "active", // Add the status attribute with the value "active"
       });
 
       const bookingRef = doc(collection(db2, "booking"));
@@ -108,7 +109,8 @@ const ParkLot = () => {
         ParkingSlotName: parkingSlotName,
         TimeSlot: selectedTimeSlot,
         Email: email,
-        BookingDate: serverTimestamp(), // Save current date as server timestamp
+        BookingDate: serverTimestamp(),
+        Status: "active", // Include the status attribute in the document data
       });
 
       alert("Booking successful");
@@ -121,7 +123,28 @@ const ParkLot = () => {
   const timeSlots = [
     "00:00 - 01:00",
     "01:00 - 02:00",
-    // Add other time slots here
+    "02:00 - 03:00",
+    "03:00 - 04:00",
+    "04:00 - 05:00",
+    "05:00 - 06:00",
+    "06:00 - 07:00",
+    "07:00 - 08:00",
+    "08:00 - 09:00",
+    "09:00 - 10:00",
+    "10:00 - 11:00",
+    "11:00 - 12:00",
+    "12:00 - 13:00",
+    "13:00 - 14:00",
+    "14:00 - 15:00",
+    "15:00 - 16:00",
+    "16:00 - 17:00",
+    "17:00 - 18:00",
+    "18:00 - 19:00",
+    "19:00 - 20:00",
+    "20:00 - 21:00",
+    "21:00 - 22:00",
+    "22:00 - 23:00",
+    "23:00 - 00:00", // You can use "24:00" instead of "00:00" if you prefer
   ];
 
   return (
