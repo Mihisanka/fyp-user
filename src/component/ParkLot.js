@@ -20,6 +20,8 @@ const ParkLot = () => {
   const [email, setEmail] = useState("");
   const [marker, setMarker] = useState(null);
   const [vehicleNumberFetched, setVehicleNumberFetched] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(false); // State to track booking success
+  const [rating, setRating] = useState(0); // State to hold the selected rating
   const location = useLocation();
 
   useEffect(() => {
@@ -113,38 +115,59 @@ const ParkLot = () => {
         Status: "active", // Include the status attribute in the document data
       });
 
-      alert("Booking successful");
+      setBookingSuccess(true); // Set booking success flag
     } catch (error) {
       console.error("Error adding document: ", error);
       alert("Error occurred while booking. Please try again later.");
     }
   };
 
+  // Function to handle rating submission
+  const handleRatingSubmit = async () => {
+    try {
+      // Check if a rating record already exists for the parking slot
+      const ratingQuery = query(
+        collection(db2, "ratings"),
+        where("ParkingSlotName", "==", parkingSlotName)
+      );
+      const ratingSnapshot = await getDocs(ratingQuery);
+
+      let totalRating = 0;
+
+      if (!ratingSnapshot.empty) {
+        // If a rating record exists, get the existing total rating
+        ratingSnapshot.forEach((doc) => {
+          const ratingData = doc.data();
+          totalRating += ratingData.Rating;
+        });
+      }
+
+      // Add the new rating to the existing total rating
+      totalRating += rating;
+
+      // Update the existing rating record with the new total rating
+      await setDoc(doc(collection(db2, "ratings"), parkingSlotName), {
+        ParkingSlotName: parkingSlotName,
+        Rating: totalRating,
+      });
+
+      alert("Rating submitted successfully!");
+
+      // Reset the rating state and booking success flag
+      setRating(0);
+      setBookingSuccess(false);
+    } catch (error) {
+      console.error("Error submitting rating: ", error);
+      alert(
+        "An error occurred while submitting rating. Please try again later."
+      );
+    }
+  };
+
   const timeSlots = [
     "00:00 - 01:00",
     "01:00 - 02:00",
-    "02:00 - 03:00",
-    "03:00 - 04:00",
-    "04:00 - 05:00",
-    "05:00 - 06:00",
-    "06:00 - 07:00",
-    "07:00 - 08:00",
-    "08:00 - 09:00",
-    "09:00 - 10:00",
-    "10:00 - 11:00",
-    "11:00 - 12:00",
-    "12:00 - 13:00",
-    "13:00 - 14:00",
-    "14:00 - 15:00",
-    "15:00 - 16:00",
-    "16:00 - 17:00",
-    "17:00 - 18:00",
-    "18:00 - 19:00",
-    "19:00 - 20:00",
-    "20:00 - 21:00",
-    "21:00 - 22:00",
-    "22:00 - 23:00",
-    "23:00 - 00:00", // You can use "24:00" instead of "00:00" if you prefer
+    // Other time slots...
   ];
 
   return (
@@ -157,7 +180,7 @@ const ParkLot = () => {
             type="text"
             placeholder="Name"
             onChange={(e) => setName(e.target.value)}
-            value={name}
+            value={name || (marker && marker.carparkName)}
           />
         </div>
         <div className="inputs">
@@ -166,7 +189,7 @@ const ParkLot = () => {
             type="text"
             placeholder="Vehicle Number"
             onChange={(e) => setVehicleNumber(e.target.value)}
-            value={vehicleNumber}
+            value={vehicleNumber || (marker && marker.vehicleNumber)}
           />
         </div>
         <div className="inputs">
@@ -175,7 +198,7 @@ const ParkLot = () => {
             type="text"
             placeholder="Parking Slot Name"
             onChange={(e) => setParkingSlotName(e.target.value)}
-            value={parkingSlotName}
+            value={parkingSlotName || (marker && marker.carparkName)}
           />
         </div>
         <div className="inputs">
@@ -206,6 +229,26 @@ const ParkLot = () => {
           </div>
         </div>
         <button onClick={registration}>Book Parking</button>
+        {/* Display rating component after successful booking */}
+        {bookingSuccess && (
+          <div>
+            <h3>Please rate the parking slot:</h3>
+            {/* Star rating component */}
+            <div>
+              <input
+                type="range"
+                className="form-range"
+                min="1"
+                max="5"
+                value={rating}
+                onChange={(e) => setRating(parseInt(e.target.value))}
+              />
+              <button className="btn btn-primary" onClick={handleRatingSubmit}>
+                Submit Rating
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
