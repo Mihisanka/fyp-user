@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom"; // Update import
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -18,13 +18,14 @@ const Booking = () => {
     ? decodeURIComponent(user.replace(/\+/g, " "))
     : null;
   const decodedEmail = email ? decodeURIComponent(email) : "";
-  const navigate = useNavigate(); // Replace useHistory with useNavigate
+  const navigate = useNavigate();
 
   const [carparkData, setCarparkData] = useState([]);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
   const [showModal, setShowModal] = useState(false);
   const [selectedCarpark, setSelectedCarpark] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
     const fetchData = () => {
@@ -65,39 +66,32 @@ const Booking = () => {
     fetchData();
   }, []);
 
-  function handleFilterChange(event) {
+  useEffect(() => {
+    const getLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setUserLocation([position.coords.latitude, position.coords.longitude]);
+          },
+          (error) => {
+            console.error("Error getting user location:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    };
+
+    getLocation();
+  }, []);
+
+  const handleFilterChange = (event) => {
     setFilter(event.target.value);
     setShowModal(false);
-  }
-
-  const filterData = () => {
-    return filter === "all"
-      ? carparkData
-      : carparkData.filter((marker) => marker.availability === filter);
   };
 
   const toggleModal = () => {
     setShowModal(!showModal);
-  };
-
-  const customIcon = (availability) => {
-    const fillColor = availability === "unavailable" ? "red" : "green";
-    return L.divIcon({
-      className: "custom-div-icon",
-      html: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="${fillColor}" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
-              <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
-            </svg>`,
-    });
-  };
-
-  const handleBookClick = (marker) => {
-    setSelectedCarpark(marker);
-    setShowModal(true);
-    navigate("/park-lot", {
-      // Use navigate instead of history.push
-      state: { selectedMarkerData: { ...marker, decodedUser } },
-    });
-    console.log("Selected Marker Data:", { ...marker, decodedUser });
   };
 
   const handleBookCarpark = (id, selectedCarparkData, e) => {
@@ -134,9 +128,62 @@ const Booking = () => {
     }
   };
 
+  const filterData = () => {
+    return filter === "all"
+      ? carparkData
+      : carparkData.filter((marker) => marker.availability === filter);
+  };
+
+  const customIcon = (availability) => {
+    const fillColor = availability === "unavailable" ? "red" : "green";
+    return L.divIcon({
+      className: "custom-div-icon",
+      html: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="${fillColor}" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+              <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+            </svg>`,
+    });
+  };
+
+  const userIcon = L.divIcon({
+    className: "custom-div-icon",
+    html: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="blue" class="bi bi-person-fill" viewBox="0 0 16 16">
+            <path d="M8 0c3.866 0 7 3.582 7 8 0 3.054-1.897 5.694-4.615 6.803-.176.071-.372.117-.572.117-.2 0-.396-.046-.572-.117C9.897 13.694 8 11.054 8 8c0-4.418 3.134-8 7-8zm-4.5 8a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0z"/>
+          </svg>`,
+  });
+
+  const handleBookClick = (marker) => {
+    setSelectedCarpark(marker);
+    setShowModal(true);
+    navigate("/park-lot", {
+      state: { selectedMarkerData: { ...marker, decodedUser } },
+    });
+    console.log("Selected Marker Data:", { ...marker, decodedUser });
+  };
+
+  const findNearestCarparkAndOpenModal = () => {
+    if (userLocation) {
+      const nearestCarpark = carparkData.reduce((nearest, current) => {
+        const distanceToCurrent = L.latLng(current.latitude, current.longitude)
+          .distanceTo(userLocation) / 1000; // Convert meters to kilometers
+        if (!nearest || distanceToCurrent < nearest.distance) {
+          return { ...current, distance: distanceToCurrent };
+        }
+        return nearest;
+      }, null);
+      if (nearestCarpark) {
+        console.log("Nearest Carpark Data:", nearestCarpark);
+        setSelectedCarpark(nearestCarpark);
+        setShowModal(true);
+      } else {
+        console.log("No carpark found");
+      }
+    } else {
+      console.log("User location not available");
+    }
+  };
+
   return (
     <div id="map" style={{ width: "100%", height: "1090px" }}>
-    
       <div className="filter form-group">
         <label htmlFor="filter" className="label">
           Filter by Availability :
@@ -151,6 +198,7 @@ const Booking = () => {
           <option value="available">Available</option>
           <option value="unavailable">Unavailable</option>
         </select>
+        <button className="btn btn-primary" onClick={findNearestCarparkAndOpenModal}>Recalibrate and Show Nearest Carpark</button>
       </div>
       <MDBModal show={showModal.toString()} onHide={() => setShowModal(false)}>
         <MDBModalHeader>Book Carpark</MDBModalHeader>
@@ -190,7 +238,7 @@ const Booking = () => {
         <p>Loading...</p>
       ) : (
         <MapContainer
-          center={[7.8731, 80.7718]}
+          center={userLocation || [7.8731, 80.7718]}
           zoom={8}
           style={{ width: "100%", height: "800px" }}
         >
@@ -228,6 +276,11 @@ const Booking = () => {
               </Popup>
             </Marker>
           ))}
+          {userLocation && (
+            <Marker position={userLocation} icon={userIcon}>
+              <Popup>You are here</Popup>
+            </Marker>
+          )}
         </MapContainer>
       )}
     </div>
