@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import {
-  collection,
-  doc,
-  setDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { useLocation,Link } from "react-router-dom";
+import {collection,doc,setDoc,getDocs,query,where,} from "firebase/firestore";
 import { db2 } from "../FirebaseConfig/Firebase";
 import "./styles/Registration.css";
 import { serverTimestamp } from "firebase/firestore";
+import Button from '@mui/material/Button';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 
 const ParkLot = () => {
   const [name, setName] = useState("");
@@ -172,11 +168,19 @@ const ParkLot = () => {
 
   return (
     <div className="container">
+      <div>   
+        <ListItem disablePadding>
+             <Button component={Link} to="/booking/:user">
+              <ListItemText primary="Back" />
+            </Button>
+        </ListItem>
+      </div>
+
       <div className="head">
         <h2>Booking</h2>
         <div className="inputs">
           <label className="label-primary">Name</label>
-          <input
+          <input 
             type="text"
             placeholder="Name"
             onChange={(e) => setName(e.target.value)}
