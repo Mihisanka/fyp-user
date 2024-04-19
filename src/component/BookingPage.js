@@ -198,7 +198,7 @@ const Booking = () => {
           <option value="available">Available</option>
           <option value="unavailable">Unavailable</option>
         </select>
-        <button className="btn btn-primary" onClick={findNearestCarparkAndOpenModal}>Recalibrate and Show Nearest Carpark</button>
+
       </div>
       <MDBModal show={showModal.toString()} onHide={() => setShowModal(false)}>
         <MDBModalHeader>Book Carpark</MDBModalHeader>
@@ -278,7 +278,12 @@ const Booking = () => {
           ))}
           {userLocation && (
             <Marker position={userLocation} icon={userIcon}>
-              <Popup>You are here</Popup>
+              <Popup>
+                <center>
+                You are here
+                </center>
+                <button className="btn btn-primary" onClick={findNearestCarparkAndOpenModal}>Nearest Carpark</button>
+              </Popup>
             </Marker>
           )}
         </MapContainer>
