@@ -11,6 +11,7 @@ import {
   MDBModalFooter,
   MDBBtn,
 } from "mdb-react-ui-kit";
+import Footer from './Footer';
 
 const Booking = () => {
   const { user, email } = useParams();
@@ -288,6 +289,7 @@ const Booking = () => {
           )}
         </MapContainer>
       )}
+      <Footer/>
     </div>
   );
 };
