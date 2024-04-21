@@ -199,7 +199,6 @@ const Booking = () => {
           <option value="available">Available</option>
           <option value="unavailable">Unavailable</option>
         </select>
-
       </div>
       <MDBModal show={showModal.toString()} onHide={() => setShowModal(false)}>
         <MDBModalHeader>Book Carpark</MDBModalHeader>
