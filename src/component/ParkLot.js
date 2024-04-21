@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { useLocation,Link } from "react-router-dom";
-import {collection,doc,setDoc,getDocs,query,where,} from "firebase/firestore";
+import { useLocation } from "react-router-dom";
+import {
+  collection,
+  doc,
+  setDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { db2 } from "../FirebaseConfig/Firebase";
 import "./styles/Registration.css";
 import { serverTimestamp } from "firebase/firestore";
-import Button from '@mui/material/Button';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const ParkLot = () => {
   const [name, setName] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [parkingSlotName, setParkingSlotName] = useState("");
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState("");
   const [email, setEmail] = useState("");
   const [marker, setMarker] = useState(null);
   const [vehicleNumberFetched, setVehicleNumberFetched] = useState(false);
@@ -89,34 +96,52 @@ const ParkLot = () => {
         alert("Please fill in all required fields");
         return;
       }
-
+  
+      // Combine selectedDate and selectedTime into a single DateTime field
+      const dateTime = new Date(selectedDate);
+      const timeParts = selectedTime.split(" - ")[0].split(":");
+      let hour = parseInt(timeParts[0]);
+      const ampm = timeParts[1].slice(-2);
+      if (ampm === "pm" && hour !== 12) {
+        hour += 12;
+      } else if (ampm === "am" && hour === 12) {
+        hour = 0;
+      }
+      dateTime.setHours(hour);
+      dateTime.setMinutes(parseInt(timeParts[1].slice(0, -2)));
+  
       console.log("Values to be saved:", {
         Name: name,
         VehicleNumber: vehicleNumber,
         ParkingSlotName: parkingSlotName,
-        TimeSlot: selectedTimeSlot,
+        DateTime: serverTimestamp(),
+        BookingDate: dateTime,
+        BookingTime: selectedTime,
         Email: email,
-        BookingDate: serverTimestamp(),
         Status: "active", // Add the status attribute with the value "active"
       });
-
+  
       const bookingRef = doc(collection(db2, "booking"));
       await setDoc(bookingRef, {
         Name: name,
         VehicleNumber: vehicleNumber,
         ParkingSlotName: parkingSlotName,
-        TimeSlot: selectedTimeSlot,
+        DateTime: serverTimestamp(),
+        BookingDate: dateTime,
+        BookingTime: selectedTime,
         Email: email,
-        BookingDate: serverTimestamp(),
         Status: "active", // Include the status attribute in the document data
       });
-
+  
       setBookingSuccess(true); // Set booking success flag
     } catch (error) {
       console.error("Error adding document: ", error);
       alert("Error occurred while booking. Please try again later.");
     }
   };
+  
+  
+  
 
   // Function to handle rating submission
   const handleRatingSubmit = async () => {
@@ -160,27 +185,24 @@ const ParkLot = () => {
     }
   };
 
-  const timeSlots = [
-    "00:00 - 01:00",
-    "01:00 - 02:00",
-    // Other time slots...
-  ];
+  // Function to generate time slots in the specified format
+  const generateTimeSlots = () => {
+    const timeSlots = [];
+    for (let i = 0; i < 24; i++) {
+      const startTime = `${i < 10 ? "0" + i : i}:00 am`;
+      const endTime = `${i + 1 < 10 ? "0" + (i + 1) : i + 1}:00 am`;
+      timeSlots.push({ startTime, endTime });
+    }
+    return timeSlots;
+  };
 
   return (
     <div className="container">
-      <div>   
-        <ListItem disablePadding>
-             <Button component={Link} to="/booking/:user">
-              <ListItemText primary="Back" />
-            </Button>
-        </ListItem>
-      </div>
-
       <div className="head">
         <h2>Booking</h2>
         <div className="inputs">
           <label className="label-primary">Name</label>
-          <input 
+          <input
             type="text"
             placeholder="Name"
             onChange={(e) => setName(e.target.value)}
@@ -206,31 +228,26 @@ const ParkLot = () => {
           />
         </div>
         <div className="inputs">
-          <label className="label-primary">Please Select a time</label>
-          <div className="dropdown">
-            <button
-              className="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dropdownMenu2"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              {selectedTimeSlot ? selectedTimeSlot : "Select Time Slot"}
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
-              {timeSlots.map((slot, index) => (
-                <button
-                  key={index}
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => setSelectedTimeSlot(slot)}
-                >
-                  {slot}
-                </button>
-              ))}
-            </div>
-          </div>
+          <label className="label-primary">Please Select a Date</label>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            dateFormat="yyyy/MM/dd"
+          />
+        </div>
+        <div className="inputs">
+          <label className="label-primary">Please Select a Time Slot</label>
+          <select
+            className="form-control"
+            value={selectedTime}
+            onChange={(e) => setSelectedTime(e.target.value)}
+          >
+            {generateTimeSlots().map((timeSlot, index) => (
+              <option key={index} value={timeSlot.startTime}>
+                {timeSlot.startTime} - {timeSlot.endTime}
+              </option>
+            ))}
+          </select>
         </div>
         <button onClick={registration}>Book Parking</button>
         {/* Display rating component after successful booking */}
