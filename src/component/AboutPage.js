@@ -1,6 +1,7 @@
 import React from 'react';
 import './styles/AboutPage.css'; 
-import Footer from './Footer';// Import the CSS file for styling
+
+// Import the CSS file for styling
 
 function AboutPage() {
   return (
@@ -28,12 +29,15 @@ function AboutPage() {
             the convenience of Park Cloud Car Park today."</p>
         </div>
       </div>
+
+
+
       <div  class="team-member">
-      <h2 className="team-heading">Our Team</h2>
+        <h2 className="team-heading">Our Team</h2>
       </div>
 
       <div className="About-row">
-              <div class="card-info">
+        <div class="card-info">
                   <div class="card-border-top">
                   </div>
                   <div class="img">
@@ -42,7 +46,7 @@ function AboutPage() {
                   <p class="job"> Job Title</p>
                   <button> Click
                   </button>
-              </div>
+        </div>
 
               <div class="card-info">
                   <div class="card-border-top">

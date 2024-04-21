@@ -31,23 +31,41 @@ const Footer = () => {
                     
                     <div className="footer-col">
                         <h4>Info</h4>
-                        <ul>
-                            <li><a href="#">watch</a></li>
-                            <li><a href="#">bag</a></li>
-                            <li><a href="#">shoes</a></li>
-                            <li><a href="#">dress</a></li>
-                        </ul>
+                            <ul>
+                                <p>
+                                    Welcome to Park Cloud Car Park, your trusted destination for hassle-free parking solutions.
+                                    Our mission is to make parking effortless and stress-free for you. 
+                                </p>
+                            </ul>
                     </div>
 
-                    {/* <div className="footer-col">
-                        <h4>follow us</h4>
+                    <div className="footer-col">
+                        <h4>Team members </h4>
                         <div className="social-links">
-                            <a href="#"><i className="fab fa-facebook-f"></i></a>
+                            <ul>
+                                <p>
+                                E.M.M.S. EKANAYAKA   (AA1679)  <br></br><br></br>
+                                N.K.NAWARATHNE        (AA1873)
+                                </p>
+                            </ul>
+                            {/* <a href="#"><i className="fab fa-facebook-f"></i></a>
                             <a href="#"><i className="fab fa-twitter"></i></a>
                             <a href="#"><i className="fab fa-instagram"></i></a>
-                            <a href="#"><i className="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i className="fab fa-linkedin-in"></i></a> */}
                         </div>
-                    </div> */}
+                    </div>
+
+                    <div className="footer-col">
+                        <h4>Project supervisor  </h4>
+                        <div className="social-links">
+                            <ul>
+                                <p>
+                                Mis.Sewmini Herath  <br></br>
+                                
+                                </p>
+                            </ul>
+                        </div>
+                    </div>
 
 
                 </div>

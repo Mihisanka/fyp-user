@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./styles/Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { db2 } from "../FirebaseConfig/Firebase";
+import Alert from '@mui/material/Alert';
 import { getDocs, collection, where, query } from "firebase/firestore";
 
 const Login = () => {
@@ -26,6 +27,7 @@ const Login = () => {
       const passwordArray = passwordSnapshot.docs.map((doc) => doc.data());
 
       if (emailArray.length > 0 && passwordArray.length > 0) {
+        
         alert("Login successful");
         // Pass email as a parameter to the Booking component
         navigate(

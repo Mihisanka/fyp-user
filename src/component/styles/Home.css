@@ -25,7 +25,7 @@
 }
 .home-heading h4 {
   text-align: center;
-  color: rgb(4, 214, 175);
+  color: rgb(251, 251, 251);
   font-size: 50px;
   /* font-family: "Lucida Console", "Courier New", monospace; */
   margin-bottom: 5px;
@@ -33,7 +33,7 @@
 
 .home-sub-heading {
   text-align: center;
-  color: rgba(11,12,40,255);
+  color: rgb(251, 251, 251);
   font-size: 16px;
   font-style: italic;
   /*margin-bottom: 10px;*/
