@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useLocation,Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import {collection,doc,setDoc,getDocs,query,where,} from "firebase/firestore";
-import { db2 } from "../FirebaseConfig/Firebase";
-import "./styles/Registration.css";
 import { serverTimestamp } from "firebase/firestore";
-import Button from '@mui/material/Button';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+import Button from "@mui/material/Button";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import { db1, db2 } from "../FirebaseConfig/Firebase.js";
+import { ref, get, update } from "firebase/database";
+import "./styles/Registration.css";
 
 const ParkLot = () => {
   const [name, setName] = useState("");
@@ -16,31 +17,39 @@ const ParkLot = () => {
   const [email, setEmail] = useState("");
   const [marker, setMarker] = useState(null);
   const [vehicleNumberFetched, setVehicleNumberFetched] = useState(false);
-  const [bookingSuccess, setBookingSuccess] = useState(false); // State to track booking success
-  const [rating, setRating] = useState(0); // State to hold the selected rating
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [rating, setRating] = useState(0);
   const location = useLocation();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const markerData = location.state
-          ? location.state.selectedMarkerData
-          : null;
-        if (markerData) {
-          console.log("Marker Data:", markerData);
-          setMarker(markerData);
-          setParkingSlotName(markerData.carparkName);
-          setEmail(markerData.decodedUser);
+  const fetchData = async () => {
+    try {
+      const markerData = location.state
+        ? location.state.selectedMarkerData
+        : null;
+      if (markerData) {
+        console.log("Marker Data:", markerData);
 
-          // Fetch vehicle number and name
-          await fetchVehicleData(markerData.decodedUser);
-          await fetchName(markerData.decodedUser);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+        const updatedMarkerData = await fetchVehicleDataAndUpdateMarker(
+          markerData
+        );
+        setMarker(updatedMarkerData);
+
+        setParkingSlotName(markerData.carparkName);
+        setEmail(markerData.decodedUser);
+
+        await fetchVehicleData(markerData.decodedUser);
+        await fetchName(markerData.decodedUser);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     fetchData();
   }, [location]);
 
@@ -75,11 +84,35 @@ const ParkLot = () => {
           const userData = doc.data();
           const vehicleNumber = userData.Vehiclenumber || "";
           setVehicleNumber(vehicleNumber);
-          setVehicleNumberFetched(true); // Set vehicle number fetched flag
+          setVehicleNumberFetched(true);
         });
       }
     } catch (error) {
       console.error("Error fetching vehicle number:", error);
+    }
+  };
+
+  const fetchVehicleDataAndUpdateMarker = async (markerData) => {
+    try {
+      const userQuery = query(
+        collection(db2, "Auth"),
+        where("Email", "==", markerData.decodedUser)
+      );
+      const userSnapshot = await getDocs(userQuery);
+      if (!userSnapshot.empty) {
+        userSnapshot.forEach((doc) => {
+          const userData = doc.data();
+          const vehicleNumber = userData.Vehiclenumber || "";
+          markerData.vehicleNumber = vehicleNumber;
+          console.log("Updated Marker Data:", markerData);
+          setVehicleNumber(vehicleNumber);
+          setVehicleNumberFetched(true);
+        });
+      }
+      return markerData;
+    } catch (error) {
+      console.error("Error fetching vehicle number:", error);
+      return markerData;
     }
   };
 
@@ -90,15 +123,7 @@ const ParkLot = () => {
         return;
       }
 
-      console.log("Values to be saved:", {
-        Name: name,
-        VehicleNumber: vehicleNumber,
-        ParkingSlotName: parkingSlotName,
-        TimeSlot: selectedTimeSlot,
-        Email: email,
-        BookingDate: serverTimestamp(),
-        Status: "active", // Add the status attribute with the value "active"
-      });
+      const updatedCapacity = await decreaseCapacity(parkingSlotName);
 
       const bookingRef = doc(collection(db2, "booking"));
       await setDoc(bookingRef, {
@@ -108,20 +133,33 @@ const ParkLot = () => {
         TimeSlot: selectedTimeSlot,
         Email: email,
         BookingDate: serverTimestamp(),
-        Status: "active", // Include the status attribute in the document data
+        Status: "active",
       });
 
-      setBookingSuccess(true); // Set booking success flag
+      setBookingSuccess(true);
     } catch (error) {
       console.error("Error adding document: ", error);
       alert("Error occurred while booking. Please try again later.");
     }
   };
 
-  // Function to handle rating submission
+  const decreaseCapacity = async (parkingSlotName) => {
+    try {
+      const carparkRef = ref(db1, `/${parkingSlotName}/capacity`);
+      const snapshot = await get(carparkRef);
+      if (snapshot.exists()) {
+        const currentCapacity = snapshot.val();
+        const updatedCapacity = currentCapacity - 1;
+        await update(carparkRef, updatedCapacity);
+        return updatedCapacity;
+      }
+    } catch (error) {
+      console.error("Error decreasing capacity:", error);
+    }
+  };
+
   const handleRatingSubmit = async () => {
     try {
-      // Check if a rating record already exists for the parking slot
       const ratingQuery = query(
         collection(db2, "ratings"),
         where("ParkingSlotName", "==", parkingSlotName)
@@ -131,17 +169,14 @@ const ParkLot = () => {
       let totalRating = 0;
 
       if (!ratingSnapshot.empty) {
-        // If a rating record exists, get the existing total rating
         ratingSnapshot.forEach((doc) => {
           const ratingData = doc.data();
           totalRating += ratingData.Rating;
         });
       }
 
-      // Add the new rating to the existing total rating
       totalRating += rating;
 
-      // Update the existing rating record with the new total rating
       await setDoc(doc(collection(db2, "ratings"), parkingSlotName), {
         ParkingSlotName: parkingSlotName,
         Rating: totalRating,
@@ -149,7 +184,6 @@ const ParkLot = () => {
 
       alert("Rating submitted successfully!");
 
-      // Reset the rating state and booking success flag
       setRating(0);
       setBookingSuccess(false);
     } catch (error) {
@@ -168,11 +202,11 @@ const ParkLot = () => {
 
   return (
     <div className="container">
-      <div>   
+      <div>
         <ListItem disablePadding>
-             <Button component={Link} to="/booking/:user">
-              <ListItemText primary="Back" />
-            </Button>
+          <Button component={Link} to="/booking/:user">
+            <ListItemText primary="Back" />
+          </Button>
         </ListItem>
       </div>
 
@@ -180,7 +214,7 @@ const ParkLot = () => {
         <h2>Booking</h2>
         <div className="inputs">
           <label className="label-primary">Name</label>
-          <input 
+          <input
             type="text"
             placeholder="Name"
             onChange={(e) => setName(e.target.value)}
@@ -194,6 +228,7 @@ const ParkLot = () => {
             placeholder="Vehicle Number"
             onChange={(e) => setVehicleNumber(e.target.value)}
             value={vehicleNumber || (marker && marker.vehicleNumber)}
+            readOnly
           />
         </div>
         <div className="inputs">
@@ -233,11 +268,9 @@ const ParkLot = () => {
           </div>
         </div>
         <button onClick={registration}>Book Parking</button>
-        {/* Display rating component after successful booking */}
         {bookingSuccess && (
           <div>
             <h3>Please rate the parking slot:</h3>
-            {/* Star rating component */}
             <div>
               <input
                 type="range"
