@@ -4,6 +4,8 @@ import React from 'react';
 import './styles/Home.css';
 import Footer from './Footer';
 import { Link } from 'react-router-dom';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
 // import Services from './Service';
 // import AboutPage from './AboutPage';
@@ -23,7 +25,10 @@ function HomePage() {
               <p style={{ color: "black" }}>
                 <b>Your trusted destination for hassle-free parking solutions.</b>
                 <Link to="/login">
-                  <button className='hb'>Booking</button>
+                  {/* <button className='hb'>Booking</button> */}
+                    <Button variant="contained" disableElevation>
+                     Book now
+                    </Button>
                 </Link>
               </p>
             </div>

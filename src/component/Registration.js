@@ -3,6 +3,7 @@ import { db2 } from "../FirebaseConfig/Firebase";
 import "./styles/Registration.css";
 import { Link ,useNavigate } from "react-router-dom";
 import { getDocs, addDoc, collection, where, query } from "firebase/firestore";
+import Button from '@mui/material/Button';
 
 const Registration = () => {
   const [name, setName] = useState("");
@@ -78,7 +79,10 @@ const Registration = () => {
             onChange={(e) => setPhoneNumber(e.target.value)}
           ></input>
         </div>
-        <button onClick={registration}>SignUp</button>
+        {/* <button onClick={registration}>SignUp</button> */}
+        <Button onClick={registration} variant="contained" disableElevation>
+                     SignUp
+                </Button>
         <div class="form-footer">
           <p>
             Already Have an account <Link to="/login">Sign in </Link>{" "}

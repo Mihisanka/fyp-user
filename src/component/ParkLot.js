@@ -273,7 +273,10 @@ const ParkLot = () => {
             </div>
           </div>
         </div>
-        <button onClick={registration}>Book Parking</button>
+        {/* <button onClick={registration}>Book Parking</button> */}
+                <Button onClick={registration} variant="contained" disableElevation>
+                  Booking
+                </Button>
         {bookingSuccess && (
           <div>
             <h3>Please rate the parking slot:</h3>
@@ -286,9 +289,13 @@ const ParkLot = () => {
                 value={rating}
                 onChange={(e) => setRating(parseInt(e.target.value))}
               />
-              <button className="btn btn-primary" onClick={handleRatingSubmit}>
+              {/* <button className="btn btn-primary" onClick={handleRatingSubmit}>
+             
                 Submit Rating
-              </button>
+              </button> */}
+              <Button onClick={handleRatingSubmit} variant="contained" disableElevation>
+              Submit Rating
+                </Button>
             </div>
           </div>
         )}

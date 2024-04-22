@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { db2 } from "../FirebaseConfig/Firebase";
 import Alert from '@mui/material/Alert';
 import { getDocs, collection, where, query } from "firebase/firestore";
+import Button from '@mui/material/Button';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -67,7 +68,10 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             ></input>
           </div>
-          <button onClick={login}>SignIn</button>
+          {/* <button onClick={login}>SignIn</button> */}
+                <Button onClick={login} variant="contained" disableElevation>
+                     SignIn
+                </Button>
         </form>
         <div className="form-footer">
           <p>
