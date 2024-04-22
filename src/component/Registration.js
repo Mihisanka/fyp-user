@@ -40,6 +40,7 @@ const Registration = () => {
 
   return (
     <div className="container">
+      <center>
       <div className="head">
         <h2>Registration</h2>
         <div className="inputs">
@@ -84,7 +85,7 @@ const Registration = () => {
           </p>
         </div>
       </div>
-  
+      </center>
     </div>
   );
 };

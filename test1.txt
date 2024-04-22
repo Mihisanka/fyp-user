@@ -1185,3 +1185,861 @@ export default Booking;
 
 
 ///////////////////////////////////////////////////end new booking ///////////////////////////////////////////////////////
+
+
+
+
+/////////////////////////////////////////////////old about page ///////////////////////////////////////////////////////
+
+// import React from 'react';
+// import './styles/AboutPage.css'; 
+
+// // Import the CSS file for styling
+
+
+
+// function AboutPage() {
+//   return (
+//     <div className="about-section">
+//       <div className="about-heading">
+//         <h1>About Us Page</h1>
+//       </div>
+//       <div className='about-c'>
+//         <div className="about-box">
+//           <div className="about-image">
+//            {/* <img src="Park_Cloud/about.png" alt=""/>*/ }
+         
+//           </div>
+//           {/* <h3>Service 4</h3>
+//               <p>Description of Service 4 goes here.</p> */}
+//         </div>
+//         <div className="about-txt">
+//           <h2>Some text about who we are and what we do.</h2>
+
+//           <p>"Welcome to Park Cloud Car Park, your trusted destination for hassle-free parking solutions.
+//             Our mission is to make parking effortless and stress-free for you. With a wide network of 
+//             secure and conveniently located parking facilities, we ensure that finding a parking spot 
+//             is never a challenge. Whether you're heading to work, exploring the city, or embarking on
+//             a journey, count on us for your parking needs. Say goodbye to parking woes and experience 
+//             the convenience of Park Cloud Car Park today."</p>
+//         </div>
+//       </div>
+
+
+
+//       <div  class="team-member">
+//         <h2 className="team-heading">Our Team</h2>
+//       </div>
+
+//       <div className="About-row">
+//         <div class="card-info">
+//                   <div class="card-border-top">
+//                   </div>
+//                   <div class="img">
+//                   </div>
+//                   <span>Mihisanka</span>
+//                   <p class="job"> Job Title</p>
+//                   <button> Click
+//                   </button>
+//         </div>
+
+//               <div class="card-info">
+//                   <div class="card-border-top">
+//                   </div>
+//                   <div class="img">
+//                   </div>
+//                   <span>Nayani</span>
+//                   <p class="job"> Job Title</p>
+//                   <button> Click
+//                   </button>
+//               </div>
+//       </div>
+      
+          
+//     </div>
+//   );
+// }
+
+// export default AboutPage;
+
+
+/////////////////////////////////// CSS///////////////////////////////////////////////////////////////////
+/* .about-section {
+  padding: 20px;
+  text-align: center;
+  background-color:rgb(255, 255, 255);
+  color: rgb(69, 64, 64);
+  height: auto;
+  align-items: center;
+}
+.About-row{
+  display: flex;
+    flex-wrap: wrap;
+    justify-content: center/*space-around/;
+    margin-bottom: 10px;
+    align-items: center;
+}
+/* .about-heading{
+  padding-bottom: 5px;
+} /
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 20;
+  align-items: center;
+  height: 120vh;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.about-c{
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap to the next line on smaller screens /
+  gap: 20px;
+}
+
+.column {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap to the next line on smaller screens /
+  gap: 20px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin: 8px;
+}
+
+.about-txt{
+  text-align: center; /* Center-align the text /
+  font-size: medium;
+  width: auto;
+  height: auto;
+  padding-top: 10px;
+  
+
+  h2{
+    padding-bottom: 20px;
+  }
+
+}
+
+.team-member{
+  align-items: center;
+  padding-right: 50px;
+  padding-bottom: 20px;
+  padding-top: 20px;
+ 
+}
+
+.member-box {
+  flex-basis: calc(50% - 20px);
+  padding: 400px;
+  margin: 10px; /* Add some spacing between boxes /
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  height: 200px;
+  float: left;
+ 
+}
+
+.container {
+  padding: 0 16px;
+}
+
+.container::after, .row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.title {
+  color: grey;
+}
+
+.button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.button:hover {
+  background-color: #555;
+}
+
+/*card info/
+
+.card-info {
+  width: 190px;
+  height: 254px;
+  background: #3405a3;
+  border-radius: 15px;
+  box-shadow: 1px 5px 60px 0px #100a886b;
+  margin-left:30px;
+  align-items: center;
+  
+ }
+ 
+ .card-info .card-border-top {
+  width: 60%;
+  height: 3%;
+  background: #6b64f3;
+  margin: auto;
+  border-radius: 0px 0px 15px 15px;
+ }
+ 
+ .card-info span {
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  display: block;
+  padding-top: 10px;
+  font-size: 16px;
+ }
+ 
+ .card-info .job {
+  font-weight: 400;
+  color: white;
+  display: block;
+  text-align: center;
+  padding-top: 3px;
+  font-size: 12px;
+ }
+ 
+ .card-info .img {
+  width: 70px;
+  height: 80px;
+  background: #6b64f3;
+  border-radius: 15px;
+  margin: auto;
+  margin-top: 25px;
+ }
+ 
+ .card-info button {
+  padding: 8px 25px;
+  display: block;
+  margin: auto;
+  border-radius: 8px;
+  border: none;
+  margin-top: 30px;
+  background: #6b64f3;
+  color: white;
+  font-weight: 600;
+ }
+ 
+ .card-info button:hover {
+  background: #534bf3;
+ }
+
+ @media(max-width:736px){
+  .contact-form .main{
+      flex-direction: column;
+  }
+  .contact-form form{
+      margin-top: 30px;
+      margin-bottom: 10px;
+
+  }
+  .form-img{
+      border-radius: 0;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      order: 2;
+  }
+  .content{
+      order: 1;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+  }
+}
+
+
+
+
+/******************************* About Me Card ******************************
+.about-box {
+  flex-basis: calc(50% - 20px);
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  align-items: right;
+  width: 600px;
+  height: 400px;
+  
+}*/
+
+
+/* 
+.info-cards{
+  width:80%;
+  max-width:400px;
+  display:flex;
+  flex-flow:row wrap;
+  justify-content:space-evenly;
+  align-items:center
+}
+
+.info-card{
+  width:100%;
+  max-width:290px;
+  display:flex;
+  flex-flow:row wrap;
+  justify-content:center;
+  align-items:center;
+  padding:30px 0 15px;
+  margin-bottom:50px;
+  margin-top:30px;
+  margin-left: 30px;
+  border-radius:20px;
+  box-shadow:0px 5px 5px rgba(0,0,0,.3),1px -1px 2px rgba(0,0,0,.4);
+  cursor:pointer;
+  transition:all .3s ease-in-out;
+}
+
+.info-card:hover{
+  background:linear-gradient(45deg,  #085fbd 0%, rgba(3, 20, 151, 0.944));
+  color:#fff;
+  transform:scale(1.05)
+}
+
+.info-card:hover p{
+  color:#fff
+}
+.info-card:active{
+  transform:scale(0.95);
+  background-color:#085fbd
+}
+
+.info-card .fab{
+  font-size:80px
+}
+.info-card .fa-bitcoin{color:#f9aa4b;
+   font-size:80px
+  }
+
+.info-card .fa-ethereum{
+  color:#fff;
+  padding:10px 20px;
+  font-size:60px;
+  border-radius:50%;
+  background-color:#1181e8
+}
+.info-card__title{
+  width:100%;
+  font-size:2rem;
+  margin:30px auto 20px
+}
+.info-card__title span{font-size:1rem;
+  font-weight:400;
+  color:#979797
+}
+.info-card__description{
+  font-size:1.4rem;
+  width:70%;
+  color:#646464
+}
+.info-card__btn{
+  width:150px;
+  padding:9px 10px;
+  background-color:#3671e9;
+  color:#fff;
+  border-radius:25px;
+  display:inline-block;
+  text-align:center;
+  text-decoration:none;
+  font-size:1.4rem;
+  margin:30px auto
+}
+.info-card__btn i{
+  margin-left:10px;
+  color:#3671e9;
+  background-color:#fff;
+  border-radius:50%;
+  padding:5px;
+  width:25px
+}
+.info-card__icon{
+  border-radius: 50px;
+  width: 100px;
+  height: 100px;
+} */
+/* .card-info__description span{
+  color:#3b9af1
+}
+.card-info__advice{
+  font-size:1rem;
+  color:#979797
+}
+.card-info__description{
+  font-size:1.3rem;
+  font-weight:700;
+  margin:15px auto
+}
+   */ 
+
+
+
+////////////////////////////////////////////////////////////end ////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////NAV BAR CSS ////////////////////////////////
+
+ /* NavBar.css
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color:#181b3a;
+  padding: 10px 20px;
+  color: rgb(250, 253, 253) ;
+  text-align: center;
+
+}
+
+.navbar-logo a {
+  text-decoration: none;
+  font-size: 24px;
+  color:rgb(254, 254, 254) ;
+}
+
+.navbar-menu{
+color:rgb(251, 252, 252) ;
+
+}
+
+.navbar-menu ul {
+  list-style: none;
+  display: flex;
+  color:rgba(247, 248, 248, 0.239) ;
+}
+
+.navbar-menu ul li {
+  margin-right: 20px;
+  color:rgb(245, 248, 248) ;
+}
+
+.navbar-menu ul li a {
+  text-decoration: none;
+  color: rgb(251, 251, 251) ;
+  font-size: 18px;
+}
+
+.navbar-menu ul li a.active-link {
+  font-weight: bold;
+}
+.navbar-menu  .profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  object-fit: cover;
+ 
+}
+.navbar-menu .profile img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.menu-icon {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.bar {
+  background-color: white;
+  height: 3px;
+  width: 30px;
+  margin: 4px 0;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.menu-item {
+  cursor: pointer;
+  font-size: 18px;
+  color:rgb(251, 252, 252);
+}
+
+
+@media (max-width: 768px) {
+  .menu-icon {
+    display: flex;
+  }
+
+  .navbar-menu {
+    flex-direction: column;
+    position: absolute;
+    background-color:rgb(12, 14, 57);
+    width: 100%;
+    top: 65px;
+    left: 0;
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(-100%);
+    z-index: 1;
+  }
+
+  .navbar-menu.active {
+    transform: translateY(0);
+  }
+
+  .navbar-menu ul {
+    flex-direction: column;
+    align-items: center;
+    /*flex-direction: column;/
+  }
+
+  .navbar-menu ul li {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .navbar-menu ul li a {
+    font-size: 20px;
+    
+  }
+
+  .navbar {
+    flex-direction: column; /* Stack logo and menu on top of each other /
+    align-items: center; /* Center items in the column /
+  }
+
+  .navbar-logo {
+    margin-bottom: 10px; /* Add space between logo and menu on small screens /
+  }
+}
+
+ */
+
+
+ /* .Navbar{
+  display: flex;
+  background-color: white;
+  padding: 10px;
+} */
+
+
+
+ /* NavBar.css */
+ /* .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color:#181b3a;
+  padding: 10px 20px;
+  color: rgb(250, 253, 253) ;
+  text-align: center;
+
+}
+
+.navbar-logo a {
+  text-decoration: none;
+  font-size: 24px;
+  color:rgb(254, 254, 254) ;
+}
+
+.navbar-menu{
+color:rgb(251, 252, 252) ;
+
+}
+
+.navbar-menu ul {
+  list-style: none;
+  display: flex;
+  color:rgba(247, 248, 248, 0.239) ;
+}
+
+.navbar-menu ul li {
+  margin-right: 20px;
+  color:rgb(245, 248, 248) ;
+}
+
+.navbar-menu ul li a {
+  text-decoration: none;
+  color: rgb(251, 251, 251) ;
+  font-size: 18px;
+}
+
+.navbar-menu ul li a.active-link {
+  font-weight: bold;
+}
+
+.menu-icon {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.bar {
+  background-color: white;
+  height: 3px;
+  width: 30px;
+  margin: 4px 0;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.menu-item {
+  cursor: pointer;
+  font-size: 18px;
+  color:rgb(251, 252, 252);
+}
+
+@media (max-width: 768px) {
+  .menu-icon {
+    display: flex;
+  }
+
+  .navbar-menu {
+    flex-direction: column;
+    position: absolute;
+    background-color:rgb(12, 14, 57);
+    width: 100%;
+    top: 65px;
+    left: 0;
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(-100%);
+    z-index: 1;
+  }
+
+  .navbar-menu.active {
+    transform: translateY(0);
+  }
+
+  .navbar-menu ul {
+    flex-direction: column;
+    align-items: center;
+    /*flex-direction: column;/
+  }
+
+  .navbar-menu ul li {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .navbar-menu ul li a {
+    font-size: 20px;
+    
+  }
+
+  .navbar {
+    flex-direction: column; /* Stack logo and menu on top of each other /
+    align-items: center; /* Center items in the column /
+  }
+
+  .navbar-logo {
+    margin-bottom: 10px; /* Add space between logo and menu on small screens /
+  }
+}
+
+ */
+
+ //////////////////////////////////////CSS ENED ////////////////////////////////////////
+ 
+
+ //////////////////////////////////////////login css///////////////////////////////////////
+ 
+
+/* .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+   
+  }
+  
+  form{
+      background-color: rgb(66, 66, 66);
+  }
+  
+  h2{
+      color: rgb(12, 14, 57);
+      text-align: center;
+  }
+
+
+  .box.input{
+    border: 2px solid transparent;
+    width: 15em;
+    height: 2.5em;
+    padding-left: 0.8em;
+    outline: none;
+    overflow: hidden;
+    background-color: #F3F3F3;
+    border-radius: 10px;
+    transition: all 0.5s;
+    padding-top: 10px;
+  }
+  .box:hover,
+    .box:focus {
+      border: 2px solid #4A9DEC;
+      box-shadow: 0px 0px 0px 7px rgb(74, 157, 236, 20%);
+      background-color: white;
+    }
+
+  
+  button{
+      width: 100%;
+      height: 50px;
+      padding: 10px;
+      border: none;
+      background-color: rebeccapurple;
+      color: white;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 15px;
+      margin-bottom: 30px;
+
+      .hover{
+        background-color: rgb(156, 91, 222);
+      }
+  }
+   */
+
+   //////////////////////////////////////////css end /////////////////////////////////////////////////
+   
+
+   ////////////////////////////////////////////////registarion css//////////////////////////////////////////////////
+   /* 
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: 100px;
+    background-color: #01012b;/* Blue background /
+    padding-top: 10px;
+ 
+  }
+ 
+ .container .registration-form {
+    background-color: #f2f2f2;
+    width: 600px;
+    height: 500px; /* Gray form background /
+    padding: 20px;
+    border-radius: 25px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    .h2{
+        color: #01012b;
+    }
+  }
+
+  .button {
+    padding: 10px 20px;
+    background-color: #4287f5; /* Blue button /
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 25px;
+  }
+   /* 
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type='text'],
+  input[type='email'],
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    border-radius: 15px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #4287f5; /* Blue button /
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 25px;
+  }
+  
+  button:hover {
+    background-color: #3366cc; /* Darker blue on hover /
+  } */
+
+  /* .container{
+    padding: 20px 30px;
+    background: #8e8e8e;
+}
+
+.container .form{
+    padding:40px 30px
+}
+.container .form h2{
+ text-align: center;
+ font-size: 24px;
+ color: black;
+}
+
+.container .form .box{
+    margin-top:15px;
+}
+
+.container .form .box input{
+    border:none;
+    outline:none;
+    border: 1px solid #dadada;
+    padding: 20px 0px;
+}
+
+.container .form .button{
+ 
+padding: 10px 30px;
+width:50%;
+height: 50%;
+color: bisque;
+border: none;
+outline: none;
+background: #8e8e8e;
+margin-top: 15px;
+cursor:pointer;
+} */ */
+
+
+///////////////////////////////////////////////end ///////////////////////////////////////////

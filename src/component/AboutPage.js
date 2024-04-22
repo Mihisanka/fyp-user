@@ -1,69 +1,58 @@
+
 import React from 'react';
-import './styles/AboutPage.css'; 
+import './styles/AboutPage.css';
+import Footer from './Footer'; 
 
-// Import the CSS file for styling
-
-function AboutPage() {
-  return (
-    <div className="about-section">
-      <div className="about-heading">
-        <h1>About Us Page</h1>
-      </div>
-      <div className='about-c'>
-        <div className="about-box">
-          <div className="about-image">
-           {/* <img src="Park_Cloud/about.png" alt=""/>*/ }
-         
-          </div>
-          {/* <h3>Service 4</h3>
-              <p>Description of Service 4 goes here.</p> */}
+const AboutCard = ({ iconClass, title, description }) => {
+    return (
+        <div className="about-card">
+            <i className={iconClass}></i>
+            <h2>{title}</h2>
+            <p>{description}</p>
         </div>
-        <div className="about-txt">
-          <h2>Some text about who we are and what we do.</h2>
+    );
+};
 
-          <p>"Welcome to Park Cloud Car Park, your trusted destination for hassle-free parking solutions.
-            Our mission is to make parking effortless and stress-free for you. With a wide network of 
-            secure and conveniently located parking facilities, we ensure that finding a parking spot 
-            is never a challenge. Whether you're heading to work, exploring the city, or embarking on
-            a journey, count on us for your parking needs. Say goodbye to parking woes and experience 
-            the convenience of Park Cloud Car Park today."</p>
+const About = () => {
+    return (
+        <div className="wrapper">
+            <h1> About Us</h1>
+            <p>Final  year  project 2024</p>
+            <div className="content-box">
+                <AboutCard iconClass="bx bx-bar-chart-alt bx-md" 
+                  title="What is Park Cloud  " 
+                  description="This innovative platform not only facilitates seamless parking bookings but also ensures the integrity
+                    of reservations through QR code verification, guaranteeing a frictionless parking experience. Catering to the demands
+                    of modern-day lifestyles, this solution is a beacon of efficiency, empowering individuals to navigate the urban 
+                    sprawl with unparalleled ease. Harnessing the power of predictive analysis and leveraging real-time updates, 
+                    our platform equips users with the strategic advantage needed to conquer the perpetual challenge of urban parking, 
+                    revolutionizing the way we engage with our surroundings.." 
+                />
+
+                <AboutCard iconClass="bx bx-laptop bx-md" 
+                  title="Abstract" 
+                  description="Our project introduces an innovative web-based parking management platform designed to streamline 
+                    parking bookings while upholding reservation integrity through QR code verification, ensuring a seamless parking
+                    experience. Tailored to modern lifestyles, our solution stands as a pinnacle of efficiency, empowering individuals
+                    to effortlessly navigate urban landscapes. By harnessing predictive analysis and real-time updates, our platform 
+                    provides users with a strategic advantage, revolutionizing the way we interact with our surroundings and conquer
+                    the perennial challenge of urban parking."
+                />
+
+                <AboutCard iconClass="bx bx-user bx-md" 
+                  title="24/7  About"
+                  description="SmartPark sets a new standard in car park management by leveraging innovative technology to provide 
+                    real-time visibility of parking spaces. Its intuitive user interface enhances the overall parking experience and 
+                    contributes to smoother traffic flow in urban areas. Through its deployment in densely populated areas, SmartPark 
+                    demonstrates its effectiveness in alleviating parking issues and optimizing commute planning for residents and 
+                    visitors alike. This groundbreaking solution represents a significant advancement in car park management,
+                    promising unparalleled convenience and efficiency for the future of urban mobility." 
+                />
+              
+            </div>
+            <Footer/>
         </div>
-      </div>
+    );
+};
 
-
-
-      <div  class="team-member">
-        <h2 className="team-heading">Our Team</h2>
-      </div>
-
-      <div className="About-row">
-        <div class="card-info">
-                  <div class="card-border-top">
-                  </div>
-                  <div class="img">
-                  </div>
-                  <span>Mihisanka</span>
-                  <p class="job"> Job Title</p>
-                  <button> Click
-                  </button>
-        </div>
-
-              <div class="card-info">
-                  <div class="card-border-top">
-                  </div>
-                  <div class="img">
-                  </div>
-                  <span>Nayani</span>
-                  <p class="job"> Job Title</p>
-                  <button> Click
-                  </button>
-              </div>
-      </div>
-      
-          
-    </div>
-  );
-}
-
-export default AboutPage;
-
+export default About;
