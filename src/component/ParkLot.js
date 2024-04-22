@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link ,useNavigate } from "react-router-dom";
 import {collection,doc,setDoc,getDocs,query,where,} from "firebase/firestore";
 import { serverTimestamp } from "firebase/firestore";
 import Button from "@mui/material/Button";
@@ -8,6 +8,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { db1, db2 } from "../FirebaseConfig/Firebase.js";
 import { ref, get, update } from "firebase/database";
 import "./styles/Registration.css";
+
 
 const ParkLot = () => {
   const [name, setName] = useState("");
@@ -20,6 +21,7 @@ const ParkLot = () => {
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [rating, setRating] = useState(0);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -183,7 +185,11 @@ const ParkLot = () => {
       });
 
       alert("Rating submitted successfully!");
-
+      navigate (
+        `/booking/${encodeURIComponent(email)}?user=${encodeURIComponent(
+          JSON.stringify({ email })
+        )}`
+      );
       setRating(0);
       setBookingSuccess(false);
     } catch (error) {
