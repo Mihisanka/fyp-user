@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { db2 } from "../FirebaseConfig/Firebase";
 import "./styles/Registration.css";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate } from "react-router-dom";
 import { getDocs, addDoc, collection, where, query } from "firebase/firestore";
 
 const Registration = () => {
@@ -12,6 +12,7 @@ const Registration = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const db2ref = collection(db2, "Auth");
   const [metch, setMetch] = useState([]);
+  const navigate = useNavigate();
 
   const registration = async () => {
     const matchEmail = query(db2ref, where("Email", "==", email));
@@ -29,6 +30,8 @@ const Registration = () => {
           Phonenumber: phoneNumber,
         });
         alert("Registration successful");
+        window.location.href = '/login'; 
+
       }
     } catch (error) {
       alert(error.message);
