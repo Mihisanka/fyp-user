@@ -15,9 +15,11 @@ const AboutCard = ({ iconClass, title, description }) => {
 
 const About = () => {
     return (
+       
+        <>
         <div className="wrapper">
-            <h1> About Us</h1>
-            <p>Final  year  project 2024</p>
+                <h1> About Us</h1>
+                 <p>Final  year  project 2024</p>
             <div className="content-box">
                 <AboutCard iconClass="bx bx-bar-chart-alt bx-md" 
                   title="What is Park Cloud  " 
@@ -50,8 +52,11 @@ const About = () => {
                 />
               
             </div>
-            <Footer/>
+            
         </div>
+       
+        <Footer/>
+        </>
     );
 };
 

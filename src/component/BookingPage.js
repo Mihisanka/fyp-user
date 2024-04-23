@@ -12,6 +12,7 @@ import {
   MDBBtn,
 } from "mdb-react-ui-kit";
 import Footer from './Footer';
+import Button from '@mui/material/Button';
 
 const Booking = () => {
   const { user, email } = useParams();
@@ -271,7 +272,10 @@ const Booking = () => {
                   <p>Price : Rs.{marker.price}.00</p>
                   <p>Latitude: {marker.latitude}</p>
                   <p>Longitude: {marker.longitude}</p>
-                  <button onClick={() => handleBookClick(marker)}>Book</button>
+                  {/* <button onClick={() => handleBookClick(marker)}>Book</button> */}
+                  <Button onClick={() => handleBookClick(marker)} variant="contained" disableElevation>
+                  Book
+                </Button>
                 </div>
               </Popup>
             </Marker>
@@ -282,7 +286,10 @@ const Booking = () => {
                 <center>
                 You are here
                 </center>
-                <button className="btn btn-primary" onClick={findNearestCarparkAndOpenModal}>Nearest Carpark</button>
+                <Button onClick={findNearestCarparkAndOpenModal} variant="contained" disableElevation>
+                Near me
+                </Button>
+                {/* <button className="btn btn-primary" onClick={findNearestCarparkAndOpenModal}>Nearest Carpark</button> */}
               </Popup>
             </Marker>
           )}
