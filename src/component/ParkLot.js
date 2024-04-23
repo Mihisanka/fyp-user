@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, Link ,useNavigate } from "react-router-dom";
-import {collection,doc,setDoc,getDocs,query,where,} from "firebase/firestore";
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import { collection, doc, setDoc, getDocs, query, where } from "firebase/firestore";
 import { serverTimestamp } from "firebase/firestore";
 import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { db1, db2 } from "../FirebaseConfig/Firebase.js";
-import { ref, get, update } from "firebase/database";
+import { db1,db2 } from "../FirebaseConfig/Firebase.js"; // Import the Firebase Realtime Database reference
+import { ref, get, update } from "firebase/database"; // Import Realtime Database methods
 import "./styles/Registration.css";
-
 
 const ParkLot = () => {
   const [name, setName] = useState("");
@@ -25,15 +24,11 @@ const ParkLot = () => {
 
   const fetchData = async () => {
     try {
-      const markerData = location.state
-        ? location.state.selectedMarkerData
-        : null;
+      const markerData = location.state ? location.state.selectedMarkerData : null;
       if (markerData) {
         console.log("Marker Data:", markerData);
 
-        const updatedMarkerData = await fetchVehicleDataAndUpdateMarker(
-          markerData
-        );
+        const updatedMarkerData = await fetchVehicleDataAndUpdateMarker(markerData);
         setMarker(updatedMarkerData);
 
         setParkingSlotName(markerData.carparkName);
@@ -57,10 +52,7 @@ const ParkLot = () => {
 
   const fetchName = async (email) => {
     try {
-      const userQuery = query(
-        collection(db2, "Auth"),
-        where("Email", "==", email)
-      );
+      const userQuery = query(collection(db2, "Auth"), where("Email", "==", email));
       const userSnapshot = await getDocs(userQuery);
       if (!userSnapshot.empty) {
         userSnapshot.forEach((doc) => {
@@ -76,10 +68,7 @@ const ParkLot = () => {
 
   const fetchVehicleData = async (email) => {
     try {
-      const userQuery = query(
-        collection(db2, "Auth"),
-        where("Email", "==", email)
-      );
+      const userQuery = query(collection(db2, "Auth"), where("Email", "==", email));
       const userSnapshot = await getDocs(userQuery);
       if (!userSnapshot.empty) {
         userSnapshot.forEach((doc) => {
@@ -96,16 +85,15 @@ const ParkLot = () => {
 
   const fetchVehicleDataAndUpdateMarker = async (markerData) => {
     try {
-      const userQuery = query(
-        collection(db2, "Auth"),
-        where("Email", "==", markerData.decodedUser)
-      );
+      const updatedCapacity = markerData.capacity - 1;
+      const userQuery = query(collection(db2, "Auth"), where("Email", "==", markerData.decodedUser));
       const userSnapshot = await getDocs(userQuery);
       if (!userSnapshot.empty) {
         userSnapshot.forEach((doc) => {
           const userData = doc.data();
           const vehicleNumber = userData.Vehiclenumber || "";
           markerData.vehicleNumber = vehicleNumber;
+          markerData.updatedCapacity = updatedCapacity; // Add updatedCapacity to markerData
           console.log("Updated Marker Data:", markerData);
           setVehicleNumber(vehicleNumber);
           setVehicleNumberFetched(true);
@@ -118,14 +106,34 @@ const ParkLot = () => {
     }
   };
 
+  // import { ref, get, update } from "firebase/database";
+
+  const decreaseCapacity = async (parkingSlotId) => {
+    try {
+      const carparkRef = ref(db1, parkingSlotId); // Reference to the parking slot
+      const snapshot = await get(carparkRef);
+      if (snapshot.exists()) {
+        console.log("Carpark Data:", snapshot.val()); // Logging carpark data
+        const currentCapacity = snapshot.val().capacity; // Accessing capacity field directly
+        const updatedCapacity = currentCapacity - 1;
+        await update(carparkRef, { capacity: updatedCapacity }); // Updating capacity field
+        return updatedCapacity;
+      }
+    } catch (error) {
+      console.error("Error decreasing capacity:", error);
+      throw error; // Throw the error to handle it in the calling function
+    }
+  };
+  
+
   const registration = async () => {
     try {
       if (!vehicleNumberFetched) {
         alert("Please fill in all required fields");
         return;
       }
-
-      const updatedCapacity = await decreaseCapacity(parkingSlotName);
+      const markerData = location.state ? location.state.selectedMarkerData : null;
+      const updatedCapacity = await decreaseCapacity(markerData.id);
 
       const bookingRef = doc(collection(db2, "booking"));
       await setDoc(bookingRef, {
@@ -136,6 +144,7 @@ const ParkLot = () => {
         Email: email,
         BookingDate: serverTimestamp(),
         Status: "active",
+        Capacity: updatedCapacity, // Add the updated capacity to the booking data
       });
 
       setBookingSuccess(true);
@@ -145,27 +154,9 @@ const ParkLot = () => {
     }
   };
 
-  const decreaseCapacity = async (parkingSlotName) => {
-    try {
-      const carparkRef = ref(db1, `/${parkingSlotName}/capacity`);
-      const snapshot = await get(carparkRef);
-      if (snapshot.exists()) {
-        const currentCapacity = snapshot.val();
-        const updatedCapacity = currentCapacity - 1;
-        await update(carparkRef, updatedCapacity);
-        return updatedCapacity;
-      }
-    } catch (error) {
-      console.error("Error decreasing capacity:", error);
-    }
-  };
-
   const handleRatingSubmit = async () => {
     try {
-      const ratingQuery = query(
-        collection(db2, "ratings"),
-        where("ParkingSlotName", "==", parkingSlotName)
-      );
+      const ratingQuery = query(collection(db2, "ratings"), where("ParkingSlotName", "==", parkingSlotName));
       const ratingSnapshot = await getDocs(ratingQuery);
 
       let totalRating = 0;
@@ -185,18 +176,14 @@ const ParkLot = () => {
       });
 
       alert("Rating submitted successfully!");
-      navigate (
-        `/booking/${encodeURIComponent(email)}?user=${encodeURIComponent(
-          JSON.stringify({ email })
-        )}`
+      navigate(
+        `/booking/${encodeURIComponent(email)}?user=${encodeURIComponent(JSON.stringify({ email }))}`
       );
       setRating(0);
       setBookingSuccess(false);
     } catch (error) {
       console.error("Error submitting rating: ", error);
-      alert(
-        "An error occurred while submitting rating. Please try again later."
-      );
+      alert("An error occurred while submitting rating. Please try again later.");
     }
   };
 
@@ -273,7 +260,9 @@ const ParkLot = () => {
             </div>
           </div>
         </div>
-        <button onClick={registration}>Book Parking</button>
+        <Button onClick={registration} variant="contained" disableElevation>
+          Booking
+        </Button>
         {bookingSuccess && (
           <div>
             <h3>Please rate the parking slot:</h3>
@@ -286,9 +275,9 @@ const ParkLot = () => {
                 value={rating}
                 onChange={(e) => setRating(parseInt(e.target.value))}
               />
-              <button className="btn btn-primary" onClick={handleRatingSubmit}>
+              <Button onClick={handleRatingSubmit} variant="contained" disableElevation>
                 Submit Rating
-              </button>
+              </Button>
             </div>
           </div>
         )}
