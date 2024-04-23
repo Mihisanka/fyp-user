@@ -13,7 +13,7 @@ const ServiceCard = ({ iconClass, title, description }) => {
 };
 
 const Services = () => {
-    return (
+    return (<>
         <div className="wrapper">
             <h1>Our Services</h1>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse amet illo eos eligendi nobis nam aspernatur placeat.</p>
@@ -25,8 +25,10 @@ const Services = () => {
                 <ServiceCard iconClass="bx bx-bar-chart-alt bx-md" title="Most selected carking " description="Iure ad fuga, voluptas nisi odit blanditiis aut culpa quasi. Expedita deleniti molestias hic numquam delectus!" />
                 <ServiceCard iconClass="bx bx-paint bx-md" title="Predictive analysis of parking slot utilization" description="Iure ad fuga, voluptas nisi odit blanditiis aut culpa quasi. Expedita deleniti molestias hic numquam delectus!" />
             </div>
-            <Footer/>
+            
         </div>
+        <Footer/>
+         </>
     );
 };
 

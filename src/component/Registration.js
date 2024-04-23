@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { db2 } from "../FirebaseConfig/Firebase";
 import "./styles/Registration.css";
-import { Link ,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getDocs, addDoc, collection, where, query } from "firebase/firestore";
+import Button from "@mui/material/Button";
 
 const Registration = () => {
   const [name, setName] = useState("");
@@ -30,8 +31,7 @@ const Registration = () => {
           Phonenumber: phoneNumber,
         });
         alert("Registration successful");
-        window.location.href = '/login'; 
-
+        window.location.href = "/login";
       }
     } catch (error) {
       alert(error.message);
@@ -41,50 +41,53 @@ const Registration = () => {
   return (
     <div className="container">
       <center>
-      <div className="head">
-        <h2>Registration</h2>
-        <div className="inputs">
-          <input
-            type="text"
-            placeholder="Name"
-            onChange={(e) => setName(e.target.value)}
-          ></input>
+        <div className="head">
+          <h2>Registration</h2>
+          <div className="inputs">
+            <input
+              type="text"
+              placeholder="Name"
+              onChange={(e) => setName(e.target.value)}
+            ></input>
+          </div>
+          <div className="inputs">
+            <input
+              type="email"
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+            ></input>
+          </div>
+          <div className="inputs">
+            <input
+              type="password"
+              placeholder="password"
+              onChange={(e) => setPassword(e.target.value)}
+            ></input>
+          </div>
+          <div className="inputs">
+            <input
+              type="number"
+              placeholder="vehicle number"
+              onChange={(e) => setVehicleNumber(e.target.value)}
+            ></input>
+          </div>
+          <div className="inputs">
+            <input
+              type="number"
+              placeholder="Phone Number"
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            ></input>
+          </div>
+          {/* <button onClick={registration}>SignUp</button> */}
+          <Button onClick={registration} variant="contained" disableElevation>
+            SignUp
+          </Button>
+          <div class="form-footer">
+            <p>
+              Already Have an account <Link to="/login">Sign in </Link>{" "}
+            </p>
+          </div>
         </div>
-        <div className="inputs">
-          <input
-            type="email"
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-          ></input>
-        </div>
-        <div className="inputs">
-          <input
-            type="password"
-            placeholder="password"
-            onChange={(e) => setPassword(e.target.value)}
-          ></input>
-        </div>
-        <div className="inputs">
-          <input
-            type="number"
-            placeholder="vehicle number"
-            onChange={(e) => setVehicleNumber(e.target.value)}
-          ></input>
-        </div>
-        <div className="inputs">
-          <input
-            type="number"
-            placeholder="Phone Number"
-            onChange={(e) => setPhoneNumber(e.target.value)}
-          ></input>
-        </div>
-        <button onClick={registration}>SignUp</button>
-        <div class="form-footer">
-          <p>
-            Already Have an account <Link to="/login">Sign in </Link>{" "}
-          </p>
-        </div>
-      </div>
       </center>
     </div>
   );

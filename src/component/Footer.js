@@ -34,7 +34,6 @@ const Footer = () => {
                             <ul>
                                 <p>
                                     Welcome to Park Cloud Car Park, your trusted destination for hassle-free parking solutions.
-                                    Our mission is to make parking effortless and stress-free for you. 
                                 </p>
                             </ul>
                     </div>

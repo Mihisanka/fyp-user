@@ -5,15 +5,23 @@ import { serverTimestamp } from "firebase/firestore";
 import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { db1,db2 } from "../FirebaseConfig/Firebase.js"; // Import the Firebase Realtime Database reference
+import { db1, db2 } from "../FirebaseConfig/Firebase.js"; // Import the Firebase Realtime Database reference
 import { ref, get, update } from "firebase/database"; // Import Realtime Database methods
+import DateTimePicker from '@mui/lab/DateTimePicker'; // Import DateTimePicker component
 import "./styles/Registration.css";
+import TextField from '@mui/material/TextField';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import DesktopTimePicker from '@mui/lab/DesktopTimePicker';
+
+
 
 const ParkLot = () => {
   const [name, setName] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [parkingSlotName, setParkingSlotName] = useState("");
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+  const [selectedDateTime, setSelectedDateTime] = useState(null); // State for selected date and time
   const [email, setEmail] = useState("");
   const [marker, setMarker] = useState(null);
   const [vehicleNumberFetched, setVehicleNumberFetched] = useState(false);
@@ -106,8 +114,6 @@ const ParkLot = () => {
     }
   };
 
-  // import { ref, get, update } from "firebase/database";
-
   const decreaseCapacity = async (parkingSlotId) => {
     try {
       const carparkRef = ref(db1, parkingSlotId); // Reference to the parking slot
@@ -124,11 +130,10 @@ const ParkLot = () => {
       throw error; // Throw the error to handle it in the calling function
     }
   };
-  
 
   const registration = async () => {
     try {
-      if (!vehicleNumberFetched) {
+      if (!vehicleNumberFetched || !selectedDateTime) {
         alert("Please fill in all required fields");
         return;
       }
@@ -140,7 +145,7 @@ const ParkLot = () => {
         Name: name,
         VehicleNumber: vehicleNumber,
         ParkingSlotName: parkingSlotName,
-        TimeSlot: selectedTimeSlot,
+        TimeSlot: selectedDateTime.toString(),
         Email: email,
         BookingDate: serverTimestamp(),
         Status: "active",
@@ -193,6 +198,10 @@ const ParkLot = () => {
     // Other time slots...
   ];
 
+  const handleDateTimeChange = (newDateTime) => {
+    setSelectedDateTime(newDateTime);
+  };
+
   return (
     <div className="container">
       <div>
@@ -233,33 +242,30 @@ const ParkLot = () => {
             value={parkingSlotName || (marker && marker.carparkName)}
           />
         </div>
-        <div className="inputs">
-          <label className="label-primary">Please Select a time</label>
-          <div className="dropdown">
-            <button
-              className="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dropdownMenu2"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              {selectedTimeSlot ? selectedTimeSlot : "Select Time Slot"}
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
-              {timeSlots.map((slot, index) => (
-                <button
-                  key={index}
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => setSelectedTimeSlot(slot)}
-                >
-                  {slot}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+<div className="inputs">
+  <label className="label-primary">Date and Time</label>
+  <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <DesktopDatePicker
+      value={selectedDateTime}
+      minDate={new Date()} // Restrict selection to today or future dates
+      onChange={(date) => setSelectedDateTime(date)}
+      renderInput={(params) => <TextField {...params} />}
+      label="Select Date"
+      inputFormat="dd/MM/yyyy"
+      openTo="day" // Show calendar view by default
+      views={['day']} // Show only the day view (calendar)
+    />
+    <DesktopTimePicker
+      value={selectedDateTime}
+      onChange={(date) => setSelectedDateTime(date)}
+      renderInput={(params) => <TextField {...params} />}
+      label="Select Time"
+      minutesStep={60} // Set time interval to 1 hour
+    />
+  </LocalizationProvider>
+</div>
+
+
         <Button onClick={registration} variant="contained" disableElevation>
           Booking
         </Button>
