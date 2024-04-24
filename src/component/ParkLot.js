@@ -143,7 +143,7 @@ const ParkLot = () => {
       console.error("Error adding document: ", error);
       alert("Error occurred while booking. Please try again later.");
     }
-  };
+  };  
 
   const decreaseCapacity = async (parkingSlotName) => {
     try {
