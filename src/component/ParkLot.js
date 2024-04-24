@@ -1,47 +1,38 @@
-import React, { useState, useEffect } from "react";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { collection, doc, setDoc, getDocs, query, where } from "firebase/firestore";
-import { serverTimestamp } from "firebase/firestore";
-import Button from "@mui/material/Button";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import { db1, db2 } from "../FirebaseConfig/Firebase.js"; // Import the Firebase Realtime Database reference
-import { ref, get, update } from "firebase/database"; // Import Realtime Database methods
-import DateTimePicker from '@mui/lab/DateTimePicker'; // Import DateTimePicker component
+import { ref, get, update } from "firebase/database";
 import "./styles/Registration.css";
-import TextField from '@mui/material/TextField';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import DesktopTimePicker from '@mui/lab/DesktopTimePicker';
-
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import QRCode from "qrcode.react";
+import { db1, db2 } from "../FirebaseConfig/Firebase.js";
 
 const ParkLot = () => {
   const [name, setName] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [parkingSlotName, setParkingSlotName] = useState("");
-  const [selectedDateTime, setSelectedDateTime] = useState(null); // State for selected date and time
   const [email, setEmail] = useState("");
-  const [marker, setMarker] = useState(null);
   const [vehicleNumberFetched, setVehicleNumberFetched] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [rating, setRating] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState("");
+  const [qrData, setQrData] = useState(""); // State to store QR code data
   const location = useLocation();
   const navigate = useNavigate();
+  const qrRef = useRef(null); // Ref for QR code download anchor
+  const [marker, setMarker] = useState(null);
 
   const fetchData = async () => {
     try {
       const markerData = location.state ? location.state.selectedMarkerData : null;
       if (markerData) {
-        console.log("Marker Data:", markerData);
-
+        // Fetch necessary data
         const updatedMarkerData = await fetchVehicleDataAndUpdateMarker(markerData);
         setMarker(updatedMarkerData);
-
         setParkingSlotName(markerData.carparkName);
         setEmail(markerData.decodedUser);
-
         await fetchVehicleData(markerData.decodedUser);
         await fetchName(markerData.decodedUser);
       }
@@ -49,10 +40,6 @@ const ParkLot = () => {
       console.error("Error fetching data:", error);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   useEffect(() => {
     fetchData();
@@ -101,8 +88,7 @@ const ParkLot = () => {
           const userData = doc.data();
           const vehicleNumber = userData.Vehiclenumber || "";
           markerData.vehicleNumber = vehicleNumber;
-          markerData.updatedCapacity = updatedCapacity; // Add updatedCapacity to markerData
-          console.log("Updated Marker Data:", markerData);
+          markerData.updatedCapacity = updatedCapacity;
           setVehicleNumber(vehicleNumber);
           setVehicleNumberFetched(true);
         });
@@ -116,42 +102,51 @@ const ParkLot = () => {
 
   const decreaseCapacity = async (parkingSlotId) => {
     try {
-      const carparkRef = ref(db1, parkingSlotId); // Reference to the parking slot
+      const carparkRef = ref(db1, parkingSlotId);
       const snapshot = await get(carparkRef);
       if (snapshot.exists()) {
-        console.log("Carpark Data:", snapshot.val()); // Logging carpark data
-        const currentCapacity = snapshot.val().capacity; // Accessing capacity field directly
+        const currentCapacity = snapshot.val().capacity;
         const updatedCapacity = currentCapacity - 1;
-        await update(carparkRef, { capacity: updatedCapacity }); // Updating capacity field
+        await update(carparkRef, { capacity: updatedCapacity });
         return updatedCapacity;
       }
     } catch (error) {
       console.error("Error decreasing capacity:", error);
-      throw error; // Throw the error to handle it in the calling function
+      throw error;
     }
   };
 
   const registration = async () => {
     try {
-      if (!vehicleNumberFetched || !selectedDateTime) {
+      if (!vehicleNumberFetched || !selectedDate || !selectedTime) {
         alert("Please fill in all required fields");
         return;
       }
       const markerData = location.state ? location.state.selectedMarkerData : null;
       const updatedCapacity = await decreaseCapacity(markerData.id);
-
+  
       const bookingRef = doc(collection(db2, "booking"));
       await setDoc(bookingRef, {
         Name: name,
         VehicleNumber: vehicleNumber,
         ParkingSlotName: parkingSlotName,
-        TimeSlot: selectedDateTime.toString(),
+        BookingDate: selectedDate,
+        BookingTime: selectedTime,
         Email: email,
-        BookingDate: serverTimestamp(),
         Status: "active",
-        Capacity: updatedCapacity, // Add the updated capacity to the booking data
+        Capacity: updatedCapacity,
       });
 
+      // Generate QR code data
+      const qrData = JSON.stringify({
+        Name: name,
+        VehicleNumber: vehicleNumber,
+        ParkingSlotName: parkingSlotName,
+        BookingDate: selectedDate,
+        BookingTime: selectedTime,
+        Email: email,
+      });
+      setQrData(qrData);
       setBookingSuccess(true);
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -181,9 +176,7 @@ const ParkLot = () => {
       });
 
       alert("Rating submitted successfully!");
-      navigate(
-        `/booking/${encodeURIComponent(email)}?user=${encodeURIComponent(JSON.stringify({ email }))}`
-      );
+      navigate(`/booking/${encodeURIComponent(email)}?user=${encodeURIComponent(JSON.stringify({ email }))}`);
       setRating(0);
       setBookingSuccess(false);
     } catch (error) {
@@ -192,26 +185,29 @@ const ParkLot = () => {
     }
   };
 
-  const timeSlots = [
-    "00:00 - 01:00",
-    "01:00 - 02:00",
-    // Other time slots...
-  ];
+  const generateTimeSlots = () => {
+    const timeSlots = [];
+    for (let i = 0; i < 24; i++) {
+      const startTime = `${i < 10 ? "0" + i : i}:00 am`;
+      const endTime = `${i + 1 < 10 ? "0" + (i + 1) : i + 1}:00 am`;
+      timeSlots.push({ startTime, endTime });
+    }
+    return timeSlots;
+  };
 
-  const handleDateTimeChange = (newDateTime) => {
-    setSelectedDateTime(newDateTime);
+  const handleDownloadQR = () => {
+    const canvas = qrRef.current.querySelector("canvas");
+    const qrImageURL = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+    const downloadLink = document.createElement("a");
+    downloadLink.href = qrImageURL;
+    downloadLink.download = "booking_qr.png";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   };
 
   return (
     <div className="container">
-      <div>
-        <ListItem disablePadding>
-          <Button component={Link} to="/booking/:user">
-            <ListItemText primary="Back" />
-          </Button>
-        </ListItem>
-      </div>
-
       <div className="head">
         <h2>Booking</h2>
         <div className="inputs">
@@ -230,7 +226,6 @@ const ParkLot = () => {
             placeholder="Vehicle Number"
             onChange={(e) => setVehicleNumber(e.target.value)}
             value={vehicleNumber || (marker && marker.vehicleNumber)}
-            readOnly
           />
         </div>
         <div className="inputs">
@@ -242,33 +237,29 @@ const ParkLot = () => {
             value={parkingSlotName || (marker && marker.carparkName)}
           />
         </div>
-<div className="inputs">
-  <label className="label-primary">Date and Time</label>
-  <LocalizationProvider dateAdapter={AdapterDateFns}>
-    <DesktopDatePicker
-      value={selectedDateTime}
-      minDate={new Date()} // Restrict selection to today or future dates
-      onChange={(date) => setSelectedDateTime(date)}
-      renderInput={(params) => <TextField {...params} />}
-      label="Select Date"
-      inputFormat="dd/MM/yyyy"
-      openTo="day" // Show calendar view by default
-      views={['day']} // Show only the day view (calendar)
-    />
-    <DesktopTimePicker
-      value={selectedDateTime}
-      onChange={(date) => setSelectedDateTime(date)}
-      renderInput={(params) => <TextField {...params} />}
-      label="Select Time"
-      minutesStep={60} // Set time interval to 1 hour
-    />
-  </LocalizationProvider>
-</div>
-
-
-        <Button onClick={registration} variant="contained" disableElevation>
-          Booking
-        </Button>
+        <div className="inputs">
+          <label className="label-primary">Please Select a Date </label>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            dateFormat="yyyy/MM/dd"
+          />
+        </div>
+        <div className="inputs">
+          <label className="label-primary">Please Select a Time Slot </label>
+          <select
+            className="form-control"
+            value={selectedTime}
+            onChange={(e) => setSelectedTime(e.target.value)}
+          >
+            {generateTimeSlots().map((timeSlot, index) => (
+              <option key={index} value={timeSlot.startTime}>
+                {timeSlot.startTime} - {timeSlot.endTime}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button onClick={registration}>Book Parking</button>
         {bookingSuccess && (
           <div>
             <h3>Please rate the parking slot:</h3>
@@ -281,13 +272,20 @@ const ParkLot = () => {
                 value={rating}
                 onChange={(e) => setRating(parseInt(e.target.value))}
               />
-              <Button onClick={handleRatingSubmit} variant="contained" disableElevation>
+              <button className="btn btn-primary" onClick={handleRatingSubmit}>
                 Submit Rating
-              </Button>
+              </button>
             </div>
           </div>
         )}
       </div>
+      {bookingSuccess && qrData && (
+        <div className="qr-code" ref={qrRef}>
+          <h3>Booking QR Code:</h3>
+          <QRCode value={qrData} />
+          <button onClick={handleDownloadQR}>Download QR Code</button>
+        </div>
+      )}
     </div>
   );
 };

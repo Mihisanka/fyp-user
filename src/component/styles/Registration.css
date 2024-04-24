@@ -120,4 +120,7 @@ form button:hover {
   .main-user-info::-webkit-scrollbar {
     width: 0;
   }
+  .date-time-picker-container {
+    display: inline-block; /* Or any other appropriate display style */
+  }
 }
