@@ -7,6 +7,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import QRCode from "qrcode.react";
 import { db1, db2 } from "../FirebaseConfig/Firebase.js";
+import Button from '@mui/material/Button';
 
 const ParkLot = () => {
   const [name, setName] = useState("");
@@ -259,7 +260,29 @@ const ParkLot = () => {
             ))}
           </select>
         </div>
-        <button onClick={registration}>Book Parking</button>
+        {/* <button onClick={registration}>Book Parking</button> */}
+        <Button onClick={registration} variant="contained" disableElevation>
+        Book Parking
+                </Button>
+
+                
+
+                {bookingSuccess && qrData && (
+                  
+          <div className="qr-code" ref={qrRef}>
+            <h3>Booking QR Code:</h3>
+            <center>
+            <QRCode value={qrData} />
+            </center>
+            {/* <button onClick={handleDownloadQR}>Download QR Code</button> */}
+            <Button onClick={handleDownloadQR} variant="contained" disableElevation>
+            Download QR Code
+                  </Button>
+                 
+          </div>
+         
+        )}
+        
         {bookingSuccess && (
           <div>
             <h3>Please rate the parking slot:</h3>
@@ -272,20 +295,18 @@ const ParkLot = () => {
                 value={rating}
                 onChange={(e) => setRating(parseInt(e.target.value))}
               />
-              <button className="btn btn-primary" onClick={handleRatingSubmit}>
+              {/* <button className="btn btn-primary" onClick={handleRatingSubmit}>
                 Submit Rating
-              </button>
+              </button> */}
+               <Button onClick={handleRatingSubmit} variant="contained" disableElevation>
+               Submit Rating
+                </Button>
+              
             </div>
           </div>
         )}
       </div>
-      {bookingSuccess && qrData && (
-        <div className="qr-code" ref={qrRef}>
-          <h3>Booking QR Code:</h3>
-          <QRCode value={qrData} />
-          <button onClick={handleDownloadQR}>Download QR Code</button>
-        </div>
-      )}
+       
     </div>
   );
 };
