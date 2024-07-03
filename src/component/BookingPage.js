@@ -272,6 +272,7 @@ const Booking = () => {
                   <p>Price : Rs.{marker.price}.00</p>
                   <p>Latitude: {marker.latitude}</p>
                   <p>Longitude: {marker.longitude}</p>
+                  <p>Longitude: {marker.longitude}</p>
                   {/* <button onClick={() => handleBookClick(marker)}>Book</button> */}
                   <Button onClick={() => handleBookClick(marker)} variant="contained" disableElevation>
                   Book
