@@ -28,6 +28,11 @@ const Booking = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedCarpark, setSelectedCarpark] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
+  const showAlert = () => {
+    alert(
+      "Avg fuel consumption in car: \nAvg cost in car park: 100*5=500 \nWe can suggest Uber for you this time"
+    );
+  };
 
   useEffect(() => {
     const fetchData = () => {
@@ -272,7 +277,9 @@ const Booking = () => {
                   <p>Price : Rs.{marker.price}.00</p>
                   <p>Latitude: {marker.latitude}</p>
                   <p>Longitude: {marker.longitude}</p>
-                  <p>Longitude: {marker.longitude}</p>
+
+                  <p onClick={showAlert}>more details</p>
+
                   {/* <button onClick={() => handleBookClick(marker)}>Book</button> */}
                   <Button onClick={() => handleBookClick(marker)} variant="contained" disableElevation>
                   Book
